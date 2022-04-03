@@ -112,4 +112,19 @@ ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) +
 ```
 
 
+#I combined the data in a variety of different ways depending on what would be the most useful for the analysis. There is one for each of the three categories (all flood properties, just ex-situ, just in-situ) with both the properties and total amount paid. There is also a dataframe with all of this information in one including the number of properties and amount paid for all flood properties, for in-situ, and for ex-situ. 
+```{r}
+propertiesvalue_allflood <- left_join(floodproperties, floodproperties_amountpaid, by = "programFy")
+
+insitu_paidprops<- left_join(insitufloodproperties, insitufloodproperties_amountpaid, by = "programFy")
+
+exsitu_paidprops <- left_join (buyoutfloodproperties, buyoutfloodproperties_amountpaid, by = "programFy") 
+
+joinexsitu_insitu <- left_join (exsitu_paidprops, insitu_paidprops, by = "programFy")
+
+all_data_propvalue <- left_join(propertiesvalue_allflood, joinexsitu_insitu, by = "programFy")
+```
+
+LitterTrap <- left_join(Litter, Trap, by = c("siteID", "plotID", "trapID"))
+
 
