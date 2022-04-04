@@ -28,7 +28,6 @@ floodproperties_amountpaid <- clean_hazardprops %>%
   group_by(programFy)%>%
   summarise(Floodproperties_amountpaid = sum(actualAmountPaid))
 
-
 #Ex situ
 buyoutfloodproperties_amountpaid <- clean_hazardprops %>%
   filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
@@ -125,6 +124,5 @@ joinexsitu_insitu <- left_join (exsitu_paidprops, insitu_paidprops, by = "progra
 all_data_propvalue <- left_join(propertiesvalue_allflood, joinexsitu_insitu, by = "programFy")
 ```
 
-LitterTrap <- left_join(Litter, Trap, by = c("siteID", "plotID", "trapID"))
 
 
