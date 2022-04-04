@@ -124,5 +124,21 @@ joinexsitu_insitu <- left_join (exsitu_paidprops, insitu_paidprops, by = "progra
 all_data_propvalue <- left_join(propertiesvalue_allflood, joinexsitu_insitu, by = "programFy")
 ```
 
+#Make NAs Zero, and Date column which is January 1st for each year.  *Note this as an assumption we made in the discussion*
+```{r}
+zero_NA_alldata <- all_data_propvalue%>%
+  mutate("Date" = paste("1/1/", programFy))
+
+zero_NA_alldata$Date <- gsub(" ", "", zero_NA_alldata$Date)
+
+zero_NA_alldata$Date <- as.Date(zero_NA_alldata$Date, "%m/%d/%Y")
+
+
+zero_NA_alldata[is.na(zero_NA_alldata)] <- 0
+
+```
+
+
+```
 
 
