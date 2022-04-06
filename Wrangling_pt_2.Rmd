@@ -1,0 +1,67 @@
+---
+title: "Wrangling"
+author: Diane Sanchez 
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(mapview)
+
+FEMA_disaster_assistance <- read.csv("./Data /Raw Data /HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
+
+FEMA_open_data <- read.csv("./Data /Raw Data /OpenFemaDataSets.csv", stringsAsFactors = TRUE)
+
+FEMA_disaster_projects <- read.csv("./Data /Raw Data /HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
+
+summary(FEMA_disaster_assistance)
+
+```
+
+## Grouping data
+
+```{r Projects}
+summary(FEMA_disaster_projects)
+FEMA_disaster_assistance_complete <- FEMA_disaster_assistance %>%
+  drop_na(actualAmountPaid)
+
+#total money by state.
+Totalmoney_bystate <- FEMA_disaster_assistance_complete %>%
+  group_by(state)%>%
+  filter(state != "")%>%
+  summarise(Amount_Paid= sum(actualAmountPaid))
+
+#total money by disaster number, did someone find the list of disastor numbers?
+totalmoney_byprogram <- FEMA_disaster_assistance_complete %>%
+  group_by(programArea)%>%
+  summarise(TotalMoney = sum(actualAmountPaid))
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+
+#top 5 states with highest amount of assistance 
+Totalmoney_bystate %>% 
+    arrange(desc(Amount_Paid))%>%
+    slice(1:5) %>%
+    ggplot(aes(x=state, y=Amount_Paid))+
+              geom_bar(stat='identity')
+
+#This shows the difference between hazardous program and flood program in dollar amounts.  
+totalmoney_byprogram %>% 
+    arrange(desc(TotalMoney)) %>%
+    ggplot(., aes(x=programArea, y=TotalMoney))+
+              geom_bar(stat='identity')
+  
+```
+
+
