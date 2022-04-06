@@ -27,7 +27,9 @@ summary(FEMA_disaster_assistance)
 ```{r Projects}
 summary(FEMA_disaster_projects)
 FEMA_disaster_assistance_complete <- FEMA_disaster_assistance %>%
+  filter(disasterNumber:dateClosed) %>%
   drop_na(actualAmountPaid)
+  
 
 #total money by state.
 Totalmoney_bystate <- FEMA_disaster_assistance_complete %>%
@@ -65,3 +67,4 @@ totalmoney_byprogram %>%
 ```
 
 
+```
