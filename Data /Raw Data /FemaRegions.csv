@@ -1,0 +1,12 @@
+name,region,address,city,state,zipCode,states,loc,regionGeometry,hash,lastRefresh,id
+FEMA Regional 1 Headquarters,1,99 High Street,Boston,MA,2110,"ME,NH,VT,MA,CT,RI",[object Object],[object Object],036bfec29c153b95636382264da9b6a31441fff5,2022-01-10T17:33:04.280Z,5ed930aba408a0483696afe6
+FEMA Regional 2 Headquarters,2,26 Federal Plz.,New York,NY,10278,"NY,NJ,PR,VI",[object Object],[object Object],c12cb341f6df4281f762fe649fb76fc75ea3ce53,2022-01-10T17:33:04.293Z,5ed930aba408a0483696afe7
+FEMA Regional 3 Headquarters,3,615 Chestnut Street,Philadelphia,PA,1910-4404,"MD,PA,WV,DC,DE,VA",[object Object],[object Object],ee4debb9c86f98efdad80b8c2f68058acc4408fc,2022-01-10T17:33:04.296Z,5ed930aba408a0483696afe8
+FEMA Regional 4 Headquarters,4,3003 Chamblee Tucker Road,Atlanta,GA,30341,"NC,SC,GA,FL,AL,MS,TN,KY",[object Object],[object Object],0727accaf053e60f3903d73a4f161f870f03e3d0,2022-01-10T17:33:04.303Z,5ed930aba408a0483696afe9
+FEMA Regional 5 Headquarters,5,"536 South Clark St., 6th Floor",Chicago,IL,60605,"IL,IN,OH,MI,WI,MN",[object Object],[object Object],b4b478f98a393c4af07467ee6b06f133d117c216,2022-01-10T17:33:04.310Z,5ed930aca408a0483696afea
+FEMA Regional 6 Headquarters,6,800 N. Loop 288,Denton,TX,76209,"NM,TX,OK,LA,AR",[object Object],[object Object],19903b417243954efcef0101f9d64b755cc1532c,2022-01-10T18:45:43.092Z,5ed930aca408a0483696afeb
+FEMA Regional 7 Headquarters,7,9221 Ward Pwy Suite 300,Kansas City,MO,64114,"NE,IA,KS,MO",[object Object],[object Object],e6ac79090a8d8e0f72d8490cbb2dff40aa952ca2,2022-01-10T17:33:04.319Z,5ed930aca408a0483696afec
+FEMA Regional 8 Headquarters,8,"Building 710, Box 25267",Denver,CO,80225-0267,"MT,ND,SD,WY,UT,CO",[object Object],[object Object],ceb49d3569985a86e429cd090dec95bc7d5d15c5,2022-01-10T17:33:04.888Z,5ed930aca408a0483696afed
+FEMA Regional 9 Headquarters,9,1111 Broadway Suite 1200,Oakland,CA,94607,"NV,AZ,CA,FSM,GUAM,HI,RMI,CNMI,AS",[object Object],[object Object],4c1e5de8329fd72e149a9a26774cc759afc72ea7,2022-01-10T17:33:05.014Z,5ed930aca408a0483696afee
+FEMA Headquarters,,500 C St. SW,Washington,DC,20472,,[object Object],,9c5c53d9ae62f4b6b3246c49afb16dde611f02a6,2022-01-10T17:33:05.257Z,5ed930ada408a0483696aff0
+FEMA Regional 10 Headquarters,10,130 228th St.,Bothell,WA,98021,"AK,WA,OR,ID",[object Object],[object Object],b88838b63f854d80138c073c300b739d7564403c,2022-01-10T17:33:05.253Z,5ed930aca408a0483696afef
