@@ -3,23 +3,26 @@ title: "Wrangling data"
 author: "Maggie O'Shea"
 date: "4/2/2022"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 library(dplyr)
 library(tidyverse)
-hazardprops <- read.csv('/Users/maggieoshea/Desktop/2021-2022 /Duke - Fall 2021/Stats/R for Stats 710/Final Project/HazardMitigationAssistanceMitigatedProperties.csv')
+
+hazard_properties <- read.csv("./Data /Raw Data /HazardMitigationAssistanceMitigatedProperties.csv")
 ```
 
 #Note: 
 I wrangled the data in two ways. First, like we talked about, I summarized amount paid over time, then looked at the amount paid for in-situ vs. ex-situ adaptation. However, all the observations before 1999 are NAs for amount paid and there are a few negative numbers (which I removed). Because of all this, I also summarized by number of properties in case we wanted to also look at that because we had data further back in time. 
 
 
-#Actual Amount Paid
+#Actual Amount Paid 
 ```{r}
 #All flood properties
-colnames(hazardprops)
-clean_hazardprops <- hazardprops %>%
+colnames(hazard_properties)
+clean_hazardprops <- hazard_properties %>%
   filter(!is.na(actualAmountPaid))%>%
   filter(actualAmountPaid > 0)
 
@@ -39,12 +42,15 @@ insitufloodproperties_amountpaid <- clean_hazardprops %>%
   filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(programFy)%>%
   summarise(insituproperties_amountpaid = sum(actualAmountPaid))
+```
 
-
-ggplot(floodproperties_amountpaid, aes(y= Floodproperties_amountpaid , x = programFy)) + 
+```{r}
+ggplot(floodproperties_amountpaid, aes(y= floodproperties_amountpaid , x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= Floodproperties_amountpaid , x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "All Flood Properties Amount Paid over Time")
+  geom_smooth(method = lm, aes(y= floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "All Flood Properties Amount Paid over Time"
+       x= Fiscal Year
+       y= Buy )
 
 ggplot(buyoutfloodproperties_amountpaid, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
@@ -74,20 +80,20 @@ ggplot(no2008_insitufloodproperties, aes(y= insituproperties_amountpaid, x = pro
 #Number of Properties 
 ```{r}
 #All flood properties
-floodproperties <- hazardprops %>%
+floodproperties <- hazard_properties %>%
   filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(programFy)%>%
   summarise(Floodpropertiesperyear = sum(numberOfProperties))
 
 
 #Ex situ
-buyoutfloodproperties <- hazardprops %>%
+buyoutfloodproperties <- hazard_properties %>%
   filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
   group_by(programFy)%>%
   summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
 
 #In situ
-insitufloodproperties <- hazardprops %>%
+insitufloodproperties <- hazard_properties  %>%
   filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(programFy)%>%
   summarise(insitupropertiesperyear = sum(numberOfProperties))
