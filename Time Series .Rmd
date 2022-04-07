@@ -1,0 +1,96 @@
+---
+title: "Data Analysis"
+author: "Diane Sanchez"
+date: "4/6/2022" 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+State_data <- read.csv("./Data /alldatabystate.csv", stringsAsFactors = TRUE)
+
+State_data_dates <- read.csv("./Data /Raw Data /HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
+State_data_dates$dateClosed <- as.Date(State_data_dates$dateClosed,  format = "%Y-%m-%d")
+
+State_year <- read.csv("./Data /bystateandyearflood.csv", stringsAsFactors = TRUE)
+State_year$programFy <- as.Date(State_year$programFy, format = "%Y-%m-%d")
+
+
+#summary(State_data)
+#summary(State_year)
+```
+
+## installing packages 
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(trend)
+library(zoo)
+library(Kendall)
+library(tseries)
+```
+
+
+## wrangle data 
+```{r}
+State_Date_data <- State_data_dates %>%
+  select(state, programFy,projectAmount, dateClosed)
+
+
+ggplot(State_Date_data, aes (x= programFy, y =projectAmount))+ 
+  geom_line()+
+  geom_smooth( method = lm ) +
+ylab ("Money")
+
+ggplot(State_year, aes (x= programFy, y =Floodpropertiesperyear))+ 
+  geom_line()+
+  geom_smooth( method = lm ) +
+ylab ("Flooded Properties")
+
+ggplot(State_year, aes (x= STATE_NAME, y =Floodpropertiesperyear))+ 
+  geom_line()+
+  geom_smooth( method = lm ) +
+ylab ("Flooded Properties")
+
+
+```
+
+
+## time series 
+
+```{r}
+state_data_ts <- ts(State_Date_data$projectAmount,
+                   start=c(1989,1), frequency = 12) 
+plot(state_data_ts)
+summary(state_data_ts)
+
+
+state2008_data_ts <- ts(State_Date_data$projectAmount,
+                   start=c(2008), frequency = 12) 
+plot(state2008_data_ts)
+summary(state2008_data_ts)
+
+State_year_ts <- ts(State_year$Floodpropertiesperyear, 
+                    start=c(1989,1), frequency = 12)
+plot(State_year_ts)
+
+
+# Run SMK test there is no significance with seasonality and money given
+state_data_trend1 <- Kendall::SeasonalMannKendall(State_data_ts)
+
+summary(state_data_trend1)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
