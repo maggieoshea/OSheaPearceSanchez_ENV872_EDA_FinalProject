@@ -4,13 +4,15 @@ author: "Maggie O'Shea"
 date: "4/2/2022"
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 ###Key to Dataset Names: 
 Note: There are other datasets that I made in wrangling, but it was simply to get to the final outcome datasets, especially when I was merging sets. Those in-between ones aren't listed here
 
 **hazard_properties** = Raw Hazard Property Data
 **clean_hazardprops** = Hazard Property Data with the negative numbers removed 
+**SOVI_USA** = Social Vulnerability Dataset from ESRI
+**SOVI_wrangle** = SVI data with added percent owner occupied column
 
 #Time Series Relevant Data: 
 --------------------------
@@ -26,7 +28,7 @@ Note: There are other datasets that I made in wrangling, but it was simply to ge
 
 **propertiesvalue_allflood** = Joined number of properties and amount paid *per year* 
 
-**all_data_propvalue** = Joined all *per year* data including all, in-situ, and ex-situ for number of properties and total USD paid 
+**zero_NA_alldata** = Joined all *per year* data including all, in-situ, and ex-situ for number of properties and total USD paid with NAs turned to zeros
 
 
 #Spatial Analysis Relevant Data: 
@@ -282,6 +284,7 @@ mapview(SOVI_USA)
 SOVI_wrangle <- SOVI_USA%>%
   mutate("PercentUnitsOcc" = OWNER_OCC/HSE_UNITS)
 
+#Not working.. not adding the flood data. 
 states_flood_sf <-  SOVI_wrangle  %>% 
   left_join(all_data_bystate, by = c("STATE_NAME" = "STATE_NAME"))
 
@@ -292,6 +295,10 @@ ggplot(data=states_flood_sf) +
 
 
 
-
+```{r}
+write.csv(all_data_bystate,"./Data /alldatabystate.csv")
+write.csv(zero_NA_alldata, "./Data /alldatabyyear.csv")
+write.csv(floodproperties_bystateperyear, "./Data /bystateandyearflood.csv")
+```
 
 
