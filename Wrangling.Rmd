@@ -4,8 +4,49 @@ author: "Maggie O'Shea"
 date: "4/2/2022"
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
+###Key to Dataset Names: 
+Note: There are other datasets that I made in wrangling, but it was simply to get to the final outcome datasets, especially when I was merging sets. Those in-between ones aren't listed here
+
+**hazard_properties** = Raw Hazard Property Data
+**clean_hazardprops** = Hazard Property Data with the negative numbers removed 
+**SOVI_USA** = Social Vulnerability Dataset from ESRI
+**SOVI_wrangle** = SVI data with added percent owner occupied column
+
+#Time Series Relevant Data: 
+--------------------------
+**floodproperties_amountpaid** = Total USD Paid *per year* for all properties funded to adapt to flooding
+
+**buyoutfloodproperties_amountpaid** = Total USD paid *per year* for properties bought out due to flooding =
+**insitufloodproperties_amountpaid** = Total USD paid *per year* for properties to adapt in place (in situ), aka for owners to stay where they are and re-construct their home/property to be more resilient to floods
+
+**floodproperties** = Number of properties that received grant money for flooding hazards *per year*
+
+**buyoutfloodproperties** =  Number of properties that were bought out due to flooding *per year*
+**insitufloodproperties** = Number of properties that received grant money to adapt the property in situ *per year* 
+
+**propertiesvalue_allflood** = Joined number of properties and amount paid *per year* 
+
+**zero_NA_alldata** = Joined all *per year* data including all, in-situ, and ex-situ for number of properties and total USD paid with NAs turned to zeros
+
+
+#Spatial Analysis Relevant Data: 
+-------------------------------
+**paidperstate_flood** = Total USD paid *per state* for any flood adaptation  
+
+**exsitu_paidperstate** = Total USD paid *per state* for properties bought out due to flooding
+**insitu_paidperstate** = Total USD paid *per state* for properties to stay and adapt in place (in situ)
+
+**floodproperties_bystate** = Total USD paid *per state* for all flooding-affected properties
+**floodproperties_bystateperyear** = Total USD paid *per state, per year* for all flooding-affected properties
+
+**exsitu_propsperstate** = Total USD paid *per state* for buyouts due to flooding 
+**insitu_propsperstate** = Total USD paid *per state* for properties to adapt in place 
+
+**propertiesbystate_allflood** = Joined all flood properties (in and ex situ) *by state* including total paid and number of properties 
+
+**all_data_bystate** = Joined all datasets *by state* including all/insitu/exsitu for total amount paid and number of properties 
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -58,8 +99,8 @@ insitufloodproperties_amountpaid <- clean_hazardprops %>%
 ggplot(floodproperties_amountpaid, aes(y= floodproperties_amountpaid , x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "All Flood Properties Amount Paid over Time"
-       x= Fiscal Year
+  labs(title = "All Flood Properties Amount Paid over Time",
+       x= Fiscal Year,
        y= Buy )
 
 ggplot(buyoutfloodproperties_amountpaid, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
@@ -151,6 +192,12 @@ ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) +
 
 ```{r number of properties by state}
 #All flood properties
+floodproperties_bystateperyear <- hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state, programFy)%>%
+  summarise(Floodpropertiesperyear = sum(numberOfProperties))%>%
+  rename("STATE_NAME" = state)
+
 floodproperties_bystate <- hazardprops %>%
   filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(state)%>%
@@ -237,15 +284,21 @@ mapview(SOVI_USA)
 SOVI_wrangle <- SOVI_USA%>%
   mutate("PercentUnitsOcc" = OWNER_OCC/HSE_UNITS)
 
-SOVI_flood <- left_join(SOVI_wrangle, all_data_bystate, by = "STATE_NAME")
+#Not working.. not adding the flood data. 
+states_flood_sf <-  SOVI_wrangle  %>% 
+  left_join(all_data_bystate, by = c("STATE_NAME" = "STATE_NAME"))
 
-ggplot(data=SOVI_flood) +
-  geom_sf(aes(fill='floodpropertiesperyear'))
+ggplot(data=states_flood_sf) +
+  geom_sf(aes(fill=floodpropertiesperyear))
 
 ```
 
 
 
-
+```{r}
+write.csv(all_data_bystate,"./Data /alldatabystate.csv")
+write.csv(zero_NA_alldata, "./Data /alldatabyyear.csv")
+write.csv(floodproperties_bystateperyear, "./Data /bystateandyearflood.csv")
+```
 
 
