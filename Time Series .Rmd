@@ -19,9 +19,53 @@ State_year <- read.csv("./Data /bystateandyearflood.csv", stringsAsFactors = TRU
 State_year$programFy <- as.Date(State_year$programFy, format = "%Y-%m-%d")
 
 
+Databyyear <- read.csv("./Data /alldatabyyear.csv")
+
 #summary(State_data)
 #summary(State_year)
 ```
+
+#time series 
+
+```{r}
+Flood_properties_ts <- ts(Databyyear$Floodpropertiesperyear, 
+                          start=c(1989,1, frequency = 12))
+plot(Flood_properties_ts, xlab="Year", ylab="Number of Properties Flooded")
+
+Flood_amounts_paid_ts <- ts(Databyyear$Floodproperties_amountpaid, 
+                            start=c(1989,1, frequency=12))
+plot(Flood_amounts_paid_ts, xlab="Year", ylab="Amount Paid for Floods")
+```
+
+#buyout time series 
+```{r}
+#number of properties 
+Number_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesperyear, 
+                       start=c(1989,1, frequency= 12))
+plot(Flood_buyouts_ts, xlab="Year", ylab="Number of Buyouts")
+
+#amount paid 
+Paid_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesamountpaid,
+                            start=c(1989,1, frequency=12))
+plot(Paid_Flood_buyouts_ts, xlab="Year", ylab="Millions Paid for Buyouts")
+
+```
+
+
+## Insut Time Series 
+```{r}
+#number of properties 
+Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear, 
+                            start=c(1989,1, frequency=12))
+plot(Number_Flood_insut_paid_ts, xlab="Year", ylab="Number of Insut Propertie")
+
+#amounts paid
+Paid_Flood_insut_ts <- ts(Databyyear$insituproperties_amountpaid, 
+                            start=c(1989,1, frequency=12))
+plot(Paid_Flood_insut_ts, xlab="Year", ylab="Millions Paid for Insut")
+
+```
+
 
 ## installing packages 
 
