@@ -104,10 +104,9 @@ insitufloodproperties_amountpaid <- clean_hazardprops %>%
 ```{r}
 ggplot(floodproperties_amountpaid, aes(y= floodproperties_amountpaid , x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  geom_smooth(method = lm)+
   labs(title = "All Flood Properties Amount Paid over Time",
-       x= Fiscal Year,
-       y= Buy )
+       x= "Fiscal Year")
 
 ggplot(buyoutfloodproperties_amountpaid, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
@@ -187,21 +186,31 @@ insitufloodproperties <- hazard_properties  %>%
   group_by(programFy)%>%
   summarise(insitupropertiesperyear = sum(numberOfProperties))
 
+finalprojecttheme <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=14, hjust=0.5), 
+            plot.subtitle = element_text(size=10, hjust=0.5))
 
 ggplot(floodproperties, aes(y= Floodpropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "All Flood Properties over Time")
+  labs(title = "Number of Hazard Mitigation Grant Recipient Properties 1985 - 2020", 
+       x = "Fiscal Year", 
+       y= "Number of Properties per Year") +
+  finalprojecttheme
 
 ggplot(buyoutfloodproperties, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "Ex-Situ Flood Properties over Time")
+  labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
 
 ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "In-Situ Flood Properties over Time")
+  labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
 
 ```
 

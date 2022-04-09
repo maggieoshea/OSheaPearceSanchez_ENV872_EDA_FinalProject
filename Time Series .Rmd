@@ -6,14 +6,18 @@ output:
   pdf_document: default
   html_document: default
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
+#Note from Maggie: 
+I added a few things to the document: I ran the time series with all the TS objects you made for number of properties, amount paid and exsitu/insitu. Because that just tests is there a statistically significant trend, I then plotted each of them so you can see the direction of the trend. I also added a few notes interpreting the findings of the time series analysis, and the plot together. I tried to keep it relatively neat but hopefully it's not too overwhelming! 
+
 
 ```{r setup, include=FALSE}
 State_data <- read.csv("./Data /alldatabystate.csv", stringsAsFactors = TRUE)
 
 State_data_dates <- read.csv("./Data /Raw Data /HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
-State_data_dates$dateClosed <- as.Date(State_data_dates$dateClosed,  format = "%Y-%m-%d")
+State_data_dates$dateClosed <- as.Date(State_data_dates$dateApproved,  format = "%Y-%m-%d")
+#I was looking at the dateclosed/dateapproved numbers and it looks like a LOT of them say 1970 but then the programFy says all different years - I wonder which one is accurate?
 
 State_year <- read.csv("./Data /bystateandyearflood.csv", stringsAsFactors = TRUE)
 State_year$programFy <- as.Date(State_year$programFy, format = "%Y-%m-%d")
@@ -23,19 +27,73 @@ Databyyear <- read.csv("./Data /alldatabyyear.csv")
 
 #summary(State_data)
 #summary(State_year)
+
+finalprojecttheme <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=14, hjust=0.5), 
+            plot.subtitle = element_text(size=10, hjust=0.5))
+
+
+
+ggplot(buyoutfloodproperties, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
+
+ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
 ```
+
+
+
 
 #time series 
 
-```{r}
+```{r Number of properties analysis}
+##Analysis of Trends in Number of Properties Per year
 Flood_properties_ts <- ts(Databyyear$Floodpropertiesperyear, 
                           start=c(1989,1, frequency = 12))
 plot(Flood_properties_ts, xlab="Year", ylab="Number of Properties Flooded")
+kendall_properties <- Kendall::MannKendall(Flood_properties_ts)
+summary(kendall_properties)
 
+ggplot(Databyyear, aes(y= Floodpropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Hazard Mitigation Grant Recipient Properties 1985 - 2020", 
+       x = "Fiscal Year", 
+       y= "Number of Properties per Year") +
+  finalprojecttheme
+```
+#Quick Analysis
+Looks like a p-value of 1 which means there is no statistical significance..however a p-value of 1 seems very weird. However, if we believe it then that means there is no statistically significant evidence to support that the data is not stationary, so there is no statistically significant trend. Looking at the plot, this isn't surprising, as the trend line is relatively flat with large error bars.
+
+```{r Amount paid analysis}
+##Analysis of Trends in Amount Paid Per year
 Flood_amounts_paid_ts <- ts(Databyyear$Floodproperties_amountpaid, 
                             start=c(1989,1, frequency=12))
 plot(Flood_amounts_paid_ts, xlab="Year", ylab="Amount Paid for Floods")
+kendall_amountpaid <- Kendall::MannKendall(Flood_amounts_paid_ts )
+summary(kendall_amountpaid)
+
+ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for Flood Adaptation in the United States",
+  subtitle = "Hazard Mitigation Grant Program: 1985 - 2020", 
+       x = "Fiscal Year", 
+       y= "Total Amount Paid for Flood Adaptation") +
+  finalprojecttheme
+
 ```
+#Quick Analysis
+P-value of 0.00465! "The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05." This means that there is a trend in the data for amount paid! Looking at the graph this is unsurprising as there is a clear increase in the amount paid per year. This shows that the increase in total amount paid is statistically significant according to our time series analysis. Very interesting! 
+
 
 #buyout time series 
 ```{r}
@@ -44,26 +102,44 @@ Number_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesperyear,
                        start=c(1989,1, frequency= 12))
 plot(Flood_buyouts_ts, xlab="Year", ylab="Number of Buyouts")
 
+kendall_propertiesbuyouts <- Kendall::MannKendall(Number_Flood_buyouts_ts)
+summary(kendall_propertiesbuyouts)
+#P-value of 0.57 .. not significant, no trend. 
+```
+
+
+
+```{r}
 #amount paid 
 Paid_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesamountpaid,
                             start=c(1989,1, frequency=12))
 plot(Paid_Flood_buyouts_ts, xlab="Year", ylab="Millions Paid for Buyouts")
 
+kendall_paidbuyouts <- Kendall::MannKendall(Paid_Flood_buyouts_ts)
+summary(kendall_paidbuyouts)
+#P-value of 0.003! Amazing! There is a statistically significant trend in the amount paid over time. 
 ```
 
 
-## Insut Time Series 
+## In Situ Time Series 
 ```{r}
 #number of properties 
 Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear, 
                             start=c(1989,1, frequency=12))
 plot(Number_Flood_insut_paid_ts, xlab="Year", ylab="Number of Insut Propertie")
 
+kendall_propertiesinsitu <- Kendall::MannKendall(Number_Flood_insut_paid_ts )
+summary(kendall_propertiesinsitu)
+
+#P-value is 0.0004 -- very statistically significant woohoo! That means that, even though there is no trend in the other two 'number of properties' analysis, this one there is which is interesting! 
+
 #amounts paid
 Paid_Flood_insut_ts <- ts(Databyyear$insituproperties_amountpaid, 
                             start=c(1989,1, frequency=12))
 plot(Paid_Flood_insut_ts, xlab="Year", ylab="Millions Paid for Insut")
-
+kendall_paidinsitu <- Kendall::MannKendall(Paid_Flood_insut_ts)
+summary(kendall_paidinsitu )
+#Even more interesting, the trend for insitu amount paid is not statistically significant. hmm..
 ```
 
 
@@ -93,7 +169,7 @@ ylab ("Money")
 ggplot(State_year, aes (x= programFy, y =Floodpropertiesperyear))+ 
   geom_line()+
   geom_smooth( method = lm ) +
-ylab ("Flooded Properties")
+ylab ("Number of Flooded Properties")
 
 ggplot(State_year, aes (x= STATE_NAME, y =Floodpropertiesperyear))+ 
   geom_line()+
@@ -107,6 +183,7 @@ ylab ("Flooded Properties")
 ## time series 
 
 ```{r}
+#I don't think these analyses are necessary because they are the same as the earlier ones, because the same data is being used except from a dataset that also includes states? It just has more datapoints per year that would add up to the points from the other analysis. Although I like the idea of removing 2008 and seeing what happens! 
 state_data_ts <- ts(State_Date_data$projectAmount,
                    start=c(1989,1), frequency = 12) 
 plot(state_data_ts)
@@ -123,7 +200,7 @@ State_year_ts <- ts(State_year$Floodpropertiesperyear,
 plot(State_year_ts)
 
 
-# Run SMK test there is no significance with seasonality and money given
+# Run SMK test there is no significance with seasonality and money given --> There can't be seasonality in yearly data, I think that's specific to monthly/daily data, so 
 state_data_trend1 <- Kendall::SeasonalMannKendall(State_data_ts)
 
 summary(state_data_trend1)
