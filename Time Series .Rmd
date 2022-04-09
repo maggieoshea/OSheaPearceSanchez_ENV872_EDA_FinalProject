@@ -71,8 +71,8 @@ ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) +
   geom_smooth(method = lm, aes(y= Floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Total Amount Paid for Flood Adaptation in the United States",
   subtitle = "Hazard Mitigation Grant Program: 1985 - 2020", 
-       x = "Fiscal Year", 
-       y= "Total Amount Paid for Flood Adaptation") +
+       x = "Year", 
+       y= "Total Amount Paid for Flood Adaptation (USD)") +
   finalprojecttheme
 
 ```

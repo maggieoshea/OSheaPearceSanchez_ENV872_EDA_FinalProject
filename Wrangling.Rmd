@@ -72,7 +72,8 @@ I wrangled the data in two ways. First, like we talked about, I summarized amoun
 #All flood properties
 colnames(hazardprops)
 #Some negative values --> not sure what these were, so removed
-clean_hazardprops <- hazardprops %>%
+clean_hazardprops <- hazardprops %>% 
+  filter(actualAmountPaid > 0)
 ```
 
 #Actual Amount Paid 
