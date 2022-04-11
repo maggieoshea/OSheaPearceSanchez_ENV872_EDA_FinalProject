@@ -173,7 +173,7 @@ ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
 #Quick Analysis
 There is no statistically significant trend in the data, which is consistent with the findings from the plot given that the trendline shows a very minimal increase. 
 
-## installing packages 
+## Generating Summary Statistics and Table
 
 ```{r}
 library(jtools)
@@ -184,43 +184,75 @@ library(moments)
 library(tidyverse)
 ```
 
-```{r summary statistics table}
+```{r generate summary statistics}
 
-summary.states <- zeroHazard %>%
- dplyr::group_by(state)%>%
-  dplyr:: select(state, n)%>%
+summary.floodpropsall <- Databyyear %>%
   summarize(
-    length=length(n),
-    mean=mean(n),
-    median=median(n),
-    sd=sd(n),
-    skew=skewness(n))
+    length=length(Floodpropertiesperyear),
+    mean=mean(Floodpropertiesperyear),
+    median=median(Floodpropertiesperyear),
+    sd=sd(Floodpropertiesperyear))%>%
+  mutate("Name" = "Number of Properties - All")
 
-gt.states.total <- Databyyear %>%
-  rename("Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd, "Skew" = skew, "State" = state) %>% 
-    gt %>% 
+summary.paidperyear <- Databyyear %>%
+    summarize(
+    length=length(Floodproperties_amountpaid),
+    mean=mean(Floodproperties_amountpaid),
+    median=median(Floodproperties_amountpaid),
+    sd=sd(Floodproperties_amountpaid))%>%
+  mutate("Name" = "All Flood Properties Amount Paid")
+
+summary.insitu.properties <- Databyyear%>%
+  summarize(
+    length=length(insitupropertiesperyear),
+    mean=mean(insitupropertiesperyear),
+    median=median(insitupropertiesperyear),
+    sd=sd(insitupropertiesperyear))%>%
+  mutate("Name" = "In-Situ Number of Properties")
+
+summary.insitu.amntpaid <- Databyyear%>%
+  summarize(
+    length=length(insituproperties_amountpaid),
+    mean=mean(insituproperties_amountpaid),
+    median=median(insituproperties_amountpaid),
+    sd=sd(insituproperties_amountpaid))%>%
+  mutate("Name" = "In-Situ Amount Paid")
+
+summary.exsitu.properties <- Databyyear%>%
+  summarize(
+    length=length(Buyouts_propertiesperyear),
+    mean=mean(Buyouts_propertiesperyear),
+    median=median(Buyouts_propertiesperyear),
+    sd=sd(Buyouts_propertiesperyear))%>%
+  mutate("Name" = "Ex-Situ Number of Properties")
+
+summary.exsitu.amntpaid <- Databyyear%>%
+  summarize(
+    length=length(Buyouts_propertiesamountpaid),
+    mean=mean(Buyouts_propertiesamountpaid),
+    median=median(Buyouts_propertiesamountpaid),
+    sd=sd(Buyouts_propertiesamountpaid))%>%
+  mutate("Name" = "Ex-Situ Amount Paid")
+
+Allsummarystatistics <- rbind(summary.exsitu.amntpaid, summary.exsitu.properties, summary.insitu.properties, summary.insitu.amntpaid, summary.floodpropsall, summary.paidperyear)
+```
+
+```{r summary stats table}
+gt.summstats <- Allsummarystatistics %>%
+  rename("Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd) %>%   gt %>% 
   fmt_number(columns = c(Observations), decimals = 0) %>%
-  fmt_number(columns = c(Mean), decimals=3) %>%
-  fmt_number(columns = c(SD), decimals = 3) %>%
-  fmt_number(columns = c(Skew), decimals = 3) %>%
-  fmt_number(columns = c(Median), decimals = 3) %>% 
+  fmt_number(columns = c(Mean), decimals=2) %>%
+  fmt_number(columns = c(SD), decimals = 0) %>%
+  fmt_number(columns = c(Median), decimals = 2) %>% 
   
   tab_header(
-    title="Administration of In-Situ Hazard Mitigation Grants",
+    title="Administration of Hazard Mitigation Grants",
   ) %>% 
   
   tab_source_note(
     source_note = "Source: Open FEMA Dataset"
-  ) %>% 
-  
-  tab_footnote(
-    footnote="Parishes were considered the county equivalent",
-    locations = cells_body(column = State, row = 4)) %>% 
-  
-    tab_footnote(
-    footnote="Independent cities such as Hampton were considered counties for this analysis",
-    locations = cells_body(column = State, row = 8))
+  )
 
   
-gt.states.total
+gt.summstats
 ```
