@@ -33,6 +33,11 @@ finalprojecttheme <- theme_light(base_size = 14) +
             legend.position = "right",  
             plot.title = element_text(size=14, hjust=0.5), 
             plot.subtitle = element_text(size=10, hjust=0.5))
+finalprojecttheme_longtitle <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=11), 
+            plot.subtitle = element_text(size=10))
 
 ```
 
@@ -93,9 +98,10 @@ ggplot(Databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
-  subtitle = "(1985 - 2020)", 
-  x = "Number of Properties", 
-  y = "Year")
+  subtitle = "1985 - 2020", 
+  y = "Number of Properties", 
+  x = "Year") +
+  finalprojecttheme_longtitle
 ```
 
 #Quick Analysis
@@ -116,9 +122,10 @@ ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) +
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Total Amount Paid for Ex-Situ Flood Adaptation in the United States",
-  subtitle = "Hazard Mitigation Grant Program: 1985 - 2020", 
+  subtitle = "1985 - 2020", 
   y = "Amount Paid (USD)", 
-  x = "Year")
+  x = "Year") +
+  finalprojecttheme
 ```
 #Quick Analysis: 
 This p-value was statistically significant. Suggesting that there is a statistically significant trend in the amount spent on buyouts and according to the plot, this is increasing. Interestingly, though the time series for number of properties is not statistically significant the linear model trend line is decreasing. The combination of this may indicate that more expensive homes are being bought out such that less homes are being bought out, but they are more costly to buy. Further analysis would be necessary to make this conclusion, however, given that the time series on number of properties was not significant. 
@@ -128,7 +135,7 @@ This p-value was statistically significant. Suggesting that there is a statistic
 #number of properties 
 Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear, 
                             start=c(1989,1, frequency=12))
-plot(Number_Flood_insut_paid_ts, xlab="Year", ylab="Number of Insut Propertie")
+
 
 kendall_propertiesinsitu <- Kendall::MannKendall(Number_Flood_insut_paid_ts )
 summary(kendall_propertiesinsitu)
@@ -137,9 +144,10 @@ ggplot(Databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
   geom_line() +
   geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
-  subtitle = "Hazard Mitigation Grant Program (1985 - 2020)", 
+  subtitle = "1985 - 2020", 
   x = "Year", 
-  y = "Number of Properties")
+  y = "Number of Properties")+
+  finalprojecttheme_longtitle
 
 ```
 #Quick Analysis: 
@@ -157,9 +165,10 @@ ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
   geom_line() +
   geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Total Amount Paid for In-Situ Flood Adaptation in the United States",
-  subtitle = "Hazard Mitigation Grant Program: 1985 - 2020", 
+  subtitle = "1985 - 2020", 
   y = "Amount Paid (USD)", 
-  x = "Year")
+  x = "Year")+
+  finalprojecttheme
 ```
 #Quick Analysis
 There is no statistically significant trend in the data, which is consistent with the findings from the plot given that the trendline shows a very minimal increase. 
@@ -167,72 +176,51 @@ There is no statistically significant trend in the data, which is consistent wit
 ## installing packages 
 
 ```{r}
+library(jtools)
+library(gt)
+library(gtsummary)
+library(knitr)
+library(moments)
 library(tidyverse)
-library(lubridate)
-library(trend)
-library(zoo)
-library(Kendall)
-library(tseries)
 ```
 
+```{r summary statistics table}
 
-## wrangle data 
-```{r}
-State_Date_data <- State_data_dates %>%
-  select(state, programFy,projectAmount, dateClosed)
+summary.states <- zeroHazard %>%
+ dplyr::group_by(state)%>%
+  dplyr:: select(state, n)%>%
+  summarize(
+    length=length(n),
+    mean=mean(n),
+    median=median(n),
+    sd=sd(n),
+    skew=skewness(n))
 
+gt.states.total <- Databyyear %>%
+  rename("Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd, "Skew" = skew, "State" = state) %>% 
+    gt %>% 
+  fmt_number(columns = c(Observations), decimals = 0) %>%
+  fmt_number(columns = c(Mean), decimals=3) %>%
+  fmt_number(columns = c(SD), decimals = 3) %>%
+  fmt_number(columns = c(Skew), decimals = 3) %>%
+  fmt_number(columns = c(Median), decimals = 3) %>% 
+  
+  tab_header(
+    title="Administration of In-Situ Hazard Mitigation Grants",
+  ) %>% 
+  
+  tab_source_note(
+    source_note = "Source: Open FEMA Dataset"
+  ) %>% 
+  
+  tab_footnote(
+    footnote="Parishes were considered the county equivalent",
+    locations = cells_body(column = State, row = 4)) %>% 
+  
+    tab_footnote(
+    footnote="Independent cities such as Hampton were considered counties for this analysis",
+    locations = cells_body(column = State, row = 8))
 
-ggplot(State_Date_data, aes (x= programFy, y =projectAmount))+ 
-  geom_line()+
-  geom_smooth( method = lm ) +
-ylab ("Money")
-
-ggplot(State_year, aes (x= programFy, y =Floodpropertiesperyear))+ 
-  geom_line()+
-  geom_smooth( method = lm ) +
-ylab ("Number of Flooded Properties")
-
-ggplot(State_year, aes (x= STATE_NAME, y =Floodpropertiesperyear))+ 
-  geom_line()+
-  geom_smooth( method = lm ) +
-ylab ("Flooded Properties")
-
-
+  
+gt.states.total
 ```
-
-
-## time series 
-
-```{r}
-#I don't think these analyses are necessary because they are the same as the earlier ones, because the same data is being used except from a dataset that also includes states? It just has more datapoints per year that would add up to the points from the other analysis. Although I like the idea of removing 2008 and seeing what happens! 
-state_data_ts <- ts(State_Date_data$projectAmount,
-                   start=c(1989,1), frequency = 12) 
-plot(state_data_ts)
-summary(state_data_ts)
-
-
-state2008_data_ts <- ts(State_Date_data$projectAmount,
-                   start=c(2008), frequency = 12) 
-plot(state2008_data_ts)
-summary(state2008_data_ts)
-
-State_year_ts <- ts(State_year$Floodpropertiesperyear, 
-                    start=c(1989,1), frequency = 12)
-plot(State_year_ts)
-
-
-# Run SMK test there is no significance with seasonality and money given --> There can't be seasonality in yearly data, I think that's specific to monthly/daily data, so 
-state_data_trend1 <- Kendall::SeasonalMannKendall(State_data_ts)
-
-summary(state_data_trend1)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
