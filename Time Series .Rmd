@@ -187,54 +187,54 @@ library(tidyverse)
 ```{r generate summary statistics}
 
 summary.floodpropsall <- Databyyear %>%
+  mutate("Name" = "Total Number of Properties")%>%  
   summarize(
     length=length(Floodpropertiesperyear),
     mean=mean(Floodpropertiesperyear),
     median=median(Floodpropertiesperyear),
-    sd=sd(Floodpropertiesperyear))%>%
-  mutate("Name" = "Number of Properties - All")
+    sd=sd(Floodpropertiesperyear))
 
 summary.paidperyear <- Databyyear %>%
-    summarize(
+  mutate("Name" = "Total Amount Paid")%>%
+  summarize(
     length=length(Floodproperties_amountpaid),
     mean=mean(Floodproperties_amountpaid),
     median=median(Floodproperties_amountpaid),
-    sd=sd(Floodproperties_amountpaid))%>%
-  mutate("Name" = "All Flood Properties Amount Paid")
+    sd=sd(Floodproperties_amountpaid))
 
 summary.insitu.properties <- Databyyear%>%
+  mutate("Name" = "In-Situ Number of Properties")%>%
   summarize(
     length=length(insitupropertiesperyear),
     mean=mean(insitupropertiesperyear),
     median=median(insitupropertiesperyear),
-    sd=sd(insitupropertiesperyear))%>%
-  mutate("Name" = "In-Situ Number of Properties")
+    sd=sd(insitupropertiesperyear))
 
 summary.insitu.amntpaid <- Databyyear%>%
+  mutate("Name" = "In-Situ Amount Paid")%>%  
   summarize(
     length=length(insituproperties_amountpaid),
     mean=mean(insituproperties_amountpaid),
     median=median(insituproperties_amountpaid),
-    sd=sd(insituproperties_amountpaid))%>%
-  mutate("Name" = "In-Situ Amount Paid")
+    sd=sd(insituproperties_amountpaid))
 
 summary.exsitu.properties <- Databyyear%>%
+  mutate("Name" = "Ex-Situ Number of Properties")%>%
   summarize(
     length=length(Buyouts_propertiesperyear),
     mean=mean(Buyouts_propertiesperyear),
     median=median(Buyouts_propertiesperyear),
-    sd=sd(Buyouts_propertiesperyear))%>%
-  mutate("Name" = "Ex-Situ Number of Properties")
+    sd=sd(Buyouts_propertiesperyear))
 
 summary.exsitu.amntpaid <- Databyyear%>%
+  mutate("Name" = "Ex-Situ Amount Paid")%>%
   summarize(
     length=length(Buyouts_propertiesamountpaid),
     mean=mean(Buyouts_propertiesamountpaid),
     median=median(Buyouts_propertiesamountpaid),
-    sd=sd(Buyouts_propertiesamountpaid))%>%
-  mutate("Name" = "Ex-Situ Amount Paid")
+    sd=sd(Buyouts_propertiesamountpaid))
 
-Allsummarystatistics <- rbind(summary.exsitu.amntpaid, summary.exsitu.properties, summary.insitu.properties, summary.insitu.amntpaid, summary.floodpropsall, summary.paidperyear)
+Allsummarystatistics <- rbind(summary.floodpropsall, summary.paidperyear, summary.exsitu.properties, summary.exsitu.amntpaid, summary.insitu.properties, summary.insitu.amntpaid)
 ```
 
 ```{r summary stats table}
