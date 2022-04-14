@@ -72,7 +72,7 @@ I wrangled the data in two ways. First, like we talked about, I summarized amoun
 #All flood properties
 colnames(hazardprops)
 #Some negative values --> not sure what these were, so removed
-clean_hazardprops <- hazardprops %>% 
+clean_hazardprops <- hazard_properties %>% 
   filter(actualAmountPaid > 0)
 ```
 
@@ -102,22 +102,69 @@ insitufloodproperties_amountpaid <- clean_hazardprops %>%
   summarise(insituproperties_amountpaid = sum(actualAmountPaid))
 ```
 
-```{r}
-ggplot(floodproperties_amountpaid, aes(y= floodproperties_amountpaid , x = programFy)) + 
+```{r inflation adjustments}
+install.packages("priceR")
+library(priceR)
+price <- floodproperties_amountpaid
+
+amountpaid_inflation <- priceR::adjust_for_inflation(floodproperties_amountpaid$Floodproperties_amountpaid, floodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_floodproperties_amountpaid <- floodproperties_amountpaid %>%
+  mutate("InflationAdjusted_AllAmountpaid" = amountpaid_inflation)
+
+#Ex situ
+
+buyouts_inflation <- priceR::adjust_for_inflation(buyoutfloodproperties_amountpaid$Buyouts_propertiesamountpaid, buyoutfloodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_buyoutfloodproperties_amountpaid <- buyoutfloodproperties_amountpaid%>%
+  mutate("InflationAdjusted_BUYOUTAmountpaid" = buyouts_inflation)
+
+#In situ
+insitu_inflation <- priceR::adjust_for_inflation(insitufloodproperties_amountpaid$insituproperties_amountpaid, insitufloodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_insituprops_amountpaid <- insitufloodproperties_amountpaid%>%
+  mutate("InflationAdjusted_INSITUAmountpaid" = insitu_inflation)
+
+```
+
+
+```{r visualize amount paid}
+
+ggplot(floodproperties_amountpaid, aes(y= Floodproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm)+
   labs(title = "All Flood Properties Amount Paid over Time",
        x= "Fiscal Year")
 
+ggplot(inflation_floodproperties_amountpaid, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm)+
+  labs(title = "All Flood Properties Amount Paid over Time",
+       x= "Fiscal Year")
+
+##Ex-Situ Trends, and Inflation Adjusted Trends
 ggplot(buyoutfloodproperties_amountpaid, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "Ex-Situ Flood Properties Amount Paid over Time")
 
+ggplot(inflation_buyoutfloodproperties_amountpaid, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm)+
+  labs(title = "Inflation Adjusted: Ex Situ Flood Properties Amount Paid over Time",
+       x= "Fiscal Year")
+
+##In-Situ Trends and Inflation Adjusted Trends
 ggplot(insitufloodproperties_amountpaid, aes(y= insituproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
   labs(title = "In-Situ Flood Properties Amount Paid over Time")
+
+ggplot(inflation_insituprops_amountpaid, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "In-Situ Flood Properties Amount Paid over Time")
+ 
 ```
 
 #Amount paid per state

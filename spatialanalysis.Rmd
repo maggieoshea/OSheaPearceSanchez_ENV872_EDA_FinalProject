@@ -26,10 +26,6 @@ NC_countyboundaries <- st_read('./Data/Raw_Data/North_Carolina_State_and_County_
 
 ```
 
-```{r wrangle}
-
-
-```
 
 ##Wrangle by County
 
