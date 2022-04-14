@@ -13,7 +13,7 @@ I added a few things to the document: I ran the time series with all the TS obje
 
 
 
-```{r, include = FALSE, message=FALSE}
+```{r, include = FALSE, message=FALSE, warning=FALSE}
 library(jtools)
 library(gt)
 library(gtsummary)
@@ -32,7 +32,7 @@ library(Kendall)
 library(tseries)
 ```
 
-```{r setup, message = FALSE}
+```{r setup, message = FALSE, include = FALSE, message=FALSE}
 Databyyear <- read.csv("./Data/alldatabyyear.csv")
 
 inflationadjusted <- read.csv("./Data/inflationadjusted.csv")
@@ -62,7 +62,9 @@ Flood_properties_ts <- ts(Databyyear$Floodpropertiesperyear,
                           start=c(1989,1, frequency = 12))
 kendall_properties <- Kendall::MannKendall(Flood_properties_ts)
 summary(kendall_properties)
+```
 
+```{r message=FALSE, warning=FALSE}
 ggplot(Databyyear, aes(y= Floodpropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
@@ -72,7 +74,7 @@ ggplot(Databyyear, aes(y= Floodpropertiesperyear, x = programFy)) +
   finalprojecttheme
 ```
 
-#Quick Analysis - All Properties, Number of Properties: 
+## Quick Analysis - All Properties, Number of Properties: 
 
 Looks like a p-value of 1 which means there is no statistical significance..however a p-value of 1 seems very weird. However, if we believe it then that means there is no statistically significant evidence to support that the data is not stationary, so there is no statistically significant trend. Looking at the plot, this isn't surprising, as the trend line is relatively flat with large error bars.
 
@@ -82,7 +84,9 @@ Flood_amounts_paid_ts <- ts(Databyyear$Floodproperties_amountpaid,
                             start=c(1989,1, frequency=12))
 kendall_amountpaid <- Kendall::MannKendall(Flood_amounts_paid_ts )
 summary(kendall_amountpaid)
+```
 
+```{r message=FALSE, warning=FALSE}
 ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -94,7 +98,7 @@ ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) +
 
 ```
 
-#Quick Analysis - All Properties, Total Amount Paid: 
+## Quick Analysis - All Properties, Total Amount Paid: 
 
 P-value of 0.00465! "The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05." This means that there is a trend in the data for amount paid - woohoo! Looking at the graph this is unsurprising as there is a clear increase in the amount paid per year. This shows that the increase in total amount paid is statistically significant according to our time series analysis. Very interesting! 
 
@@ -104,7 +108,9 @@ inflation_Flood_AP_ts <- ts(inflationadjusted$InflationAdjusted_AllAmountpaid,
                             start=c(1989,1, frequency=12))
 kendall_amountpaid_inflation <- Kendall::MannKendall(inflation_Flood_AP_ts)
 summary(kendall_amountpaid_inflation)
+```
 
+```{r message=FALSE, warning=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_AllAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -116,7 +122,7 @@ ggplot(inflationadjusted, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)
 
 ```
 
-#Quick Analysis - All Properties, Total Amount Paid ***Inflation Adjusted***
+## Quick Analysis - All Properties, Total Amount Paid ***Inflation Adjusted***
 
 Tau would indicate a slight positive trend, but the p-value is 0.57 so it is not a statistically significant trend. This may indicate that our trends in amount paid are just a reflection of inflation and not a reflection of any real trend. 
 
@@ -128,7 +134,9 @@ Number_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesperyear,
 kendall_propertiesbuyouts <- Kendall::MannKendall(Number_Flood_buyouts_ts)
 summary(kendall_propertiesbuyouts)
 #P-value of 0.57 .. not significant, no trend. 
+```
 
+```{r message=FALSE, warning=FALSE}
 ggplot(Databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
@@ -139,7 +147,7 @@ ggplot(Databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
   finalprojecttheme_longtitle
 ```
 
-#Quick Analysis - Buyouts Properties, Number of Properties
+## Quick Analysis - Buyouts Properties, Number of Properties
 
 Our plot shows that there appears to be a decrease in Number of bought out properties per year, however the time series analysis shows that this trend is not statistically significant (p > 0.05). 
 
@@ -152,7 +160,9 @@ Paid_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesamountpaid,
 kendall_paidbuyouts <- Kendall::MannKendall(Paid_Flood_buyouts_ts)
 summary(kendall_paidbuyouts)
 #P-value of 0.003! Amazing! There is a statistically significant monotonic trend in the amount paid over time. 
+```
 
+```{r message=FALSE, warning=FALSE, echo= FALSE}
 ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -164,7 +174,7 @@ ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) +
 ```
 
 
-#Quick Analysis - Buyouts, Total Amount Paid: 
+## Quick Analysis - Buyouts, Total Amount Paid: 
 
 This p-value was statistically significant. Suggesting that there is a statistically significant trend in the amount spent on buyouts and according to the plot, this is increasing. Interestingly, though the time series for number of properties is not statistically significant the linear model trend line is decreasing. The combination of this may indicate that more expensive homes are being bought out such that less homes are being bought out, but they are more costly to buy. Further analysis would be necessary to make this conclusion, however, given that the time series on number of properties was not significant. 
 
@@ -173,7 +183,9 @@ inflation_buyoutsAP_ts <- ts(inflationadjusted$InflationAdjusted_BUYOUTAmountpai
                             start=c(1989,1, frequency=12))
 kendall_Buyouts_inflation <- Kendall::MannKendall(inflation_buyoutsAP_ts)
 summary(kendall_Buyouts_inflation)
+```
 
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -184,7 +196,8 @@ ggplot(inflationadjusted, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = program
   finalprojecttheme_longtitle
 ```
 
-#Quick Analysis - Buyouts, Total Amount Paid ***Inflation Adjusted***
+## Quick Analysis - Buyouts, Total Amount Paid ***Inflation Adjusted***
+
 Tau would indicate a positive trend, but the p-value is 0.50 so it is not a statistically significant trend. Again, this helps to show that our initial trend of amount spent pre-inflation is likely just a result of inflation. 
 
 ## In Situ Time Series 
@@ -196,7 +209,10 @@ Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear,
 
 kendall_propertiesinsitu <- Kendall::MannKendall(Number_Flood_insut_paid_ts )
 summary(kendall_propertiesinsitu)
+```
 
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(Databyyear, aes(y= insitupropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
@@ -208,8 +224,11 @@ ggplot(Databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
 
 ```
 
-#Quick Analysis - In Situ, Number of Properties: 
+## Quick Analysis - In Situ, Number of Properties: 
+
 This monotonic trend is also statistically significant with a p-value of 0.0004. This combined with the linear model trendline on the plot suggests that there is a statistically significant increase in the number of properties receiving grant money to adapt "in place" over time. 
+
+
 
 ```{r}
 #amounts paid
@@ -218,7 +237,9 @@ Paid_Flood_insut_ts <- ts(Databyyear$insituproperties_amountpaid,
 plot(Paid_Flood_insut_ts, xlab="Year", ylab="Millions Paid for Insut")
 kendall_paidinsitu <- Kendall::MannKendall(Paid_Flood_insut_ts)
 summary(kendall_paidinsitu )
+```
 
+```{r insitu plot, message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -229,7 +250,8 @@ ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
   finalprojecttheme
 ```
 
-#Quick Analysis - In Situ, Total Amount Paid
+## Quick Analysis - In Situ, Total Amount Paid
+
 There is no statistically significant trend in the data, which is consistent with the findings from the plot given that the trendline shows a very minimal increase. 
 
 ```{r insitu amount paid with inflation}
@@ -237,7 +259,9 @@ inflation_InSituAP_ts <- ts(inflationadjusted$InflationAdjusted_INSITUAmountpaid
                             start=c(1989,1, frequency=12))
 kendall_insitu_inflation <- Kendall::MannKendall(inflation_InSituAP_ts)
 summary(kendall_insitu_inflation)
+```
 
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
@@ -248,13 +272,14 @@ ggplot(inflationadjusted, aes(y= InflationAdjusted_INSITUAmountpaid, x = program
   finalprojecttheme_longtitle
 ```
 
-#Quick Analysis - In Situ, Total Amount Paid ***Inflation Adjusted**
+## Quick Analysis - In Situ, Total Amount Paid ***Inflation Adjusted**
+
 Tau would indicate a positive trend, but the p-value is 0.48 so it is not a statistically significant trend. This likely indicates again that the trends in amount paid are just consistent with trends in inflation rather than real trends in the value spent on these grants. 
 
-## Generating Summary Statistics and Table
+### Generating Summary Statistics and Table
 
 
-```{r generate summary statistics}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 
 summary.floodpropsall <- Databyyear%>%  
   summarize(
@@ -321,7 +346,7 @@ summary_exsitupaid2 <- summary.exsitu.amntpaid[, c(5, 1, 2, 3, 4)]
 Allsummarystatistics <- rbind(summary_allfloods2, summary_paidperyear2, summary_insituprops2, summary_insitupaid2, summary_exsituprops2, summary_exsitupaid2)
 ```
 
-```{r summary stats table}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 library(gt)
 gt.summstats <- Allsummarystatistics %>%
   rename("Category" = Name, "Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd) %>%   
