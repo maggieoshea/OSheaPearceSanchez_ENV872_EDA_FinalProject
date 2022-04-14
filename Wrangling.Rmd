@@ -332,45 +332,20 @@ zero_NA_alldata$Date <- as.Date(zero_NA_alldata$Date, "%m/%d/%Y")
 zero_NA_alldata[is.na(zero_NA_alldata)] <- 0
 
 ```
-#Spatial Dataset
 
-
+#Bind Inflation Adjusted
 ```{r}
-library(tidyverse, quietly = TRUE)
-library(lubridate)
+inflation_exsituinsitu <- left_join(inflation_buyoutfloodproperties_amountpaid, inflation_insituprops_amountpaid, by = "programFy")
 
-#install.packages('sf')
-library(sf)
-#install.packages('leaflet')
-library(leaflet)
-#install.packages('mapview')
-library(mapview)
-
+allinflationadjusted <- left_join(inflation_floodproperties_amountpaid, inflation_exsituinsitu, by = "programFy")
 ```
 
+inflation_floodproperties_amountpaid inflation_buyoutfloodproperties_amountpaid inflation_insituprops_amountpaid
 ```{r}
-SOVI_USA <- st_read('./US_States_SOVI_Infographics.geojson')
-colnames(SOVI_USA)
-mapview(SOVI_USA)
-
-SOVI_wrangle <- SOVI_USA%>%
-  mutate("PercentUnitsOcc" = OWNER_OCC/HSE_UNITS)
-
-#Not working.. not adding the flood data. 
-states_flood_sf <-  SOVI_wrangle  %>% 
-  left_join(all_data_bystate, by = c("STATE_NAME" = "STATE_NAME"))
-
-ggplot(data=states_flood_sf) +
-  geom_sf(aes(fill=floodpropertiesperyear))
-
-```
-
-
-
-```{r}
-write.csv(all_data_bystate,"./Data /alldatabystate.csv")
-write.csv(zero_NA_alldata, "./Data /alldatabyyear.csv")
-write.csv(floodproperties_bystateperyear, "./Data /bystateandyearflood.csv")
+write.csv(all_data_bystate,"./Data/alldatabystate.csv")
+write.csv(zero_NA_alldata, "./Data/alldatabyyear.csv")
+write.csv(floodproperties_bystateperyear, "./Data/bystateandyearflood.csv")
+write.csv(allinflationadjusted, "./Data/inflationadjusted.csv")
 ```
 
 

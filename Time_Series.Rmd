@@ -25,6 +25,8 @@ State_year$programFy <- as.Date(State_year$programFy, format = "%Y-%m-%d")
 
 Databyyear <- read.csv("./Data/alldatabyyear.csv")
 
+inflationadjusted <- read.csv("./Data/inflationadjusted.csv")
+
 #summary(State_data)
 #summary(State_year)
 
@@ -84,6 +86,15 @@ ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) +
 #Quick Analysis
 P-value of 0.00465! "The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05." This means that there is a trend in the data for amount paid - woohoo! Looking at the graph this is unsurprising as there is a clear increase in the amount paid per year. This shows that the increase in total amount paid is statistically significant according to our time series analysis. Very interesting! 
 
+```{r Amount paid analysis with inflation}
+##Analysis of Trends in Amount Paid Per year
+inflation_Flood_AP_ts <- ts(inflationadjusted$InflationAdjusted_AllAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_amountpaid_inflation <- Kendall::MannKendall(inflation_Flood_AP_ts)
+summary(kendall_amountpaid_inflation)
+
+```
+
 
 #buyout time series 
 ```{r}
@@ -130,6 +141,14 @@ ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) +
 #Quick Analysis: 
 This p-value was statistically significant. Suggesting that there is a statistically significant trend in the amount spent on buyouts and according to the plot, this is increasing. Interestingly, though the time series for number of properties is not statistically significant the linear model trend line is decreasing. The combination of this may indicate that more expensive homes are being bought out such that less homes are being bought out, but they are more costly to buy. Further analysis would be necessary to make this conclusion, however, given that the time series on number of properties was not significant. 
 
+```{r buyouts amount paid with inflation}
+inflation_buyoutsAP_ts <- ts(inflationadjusted$InflationAdjusted_BUYOUTAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_Buyouts_inflation <- Kendall::MannKendall(inflation_buyoutsAP_ts)
+summary(kendall_Buyouts_inflation)
+```
+
+
 ## In Situ Time Series 
 ```{r}
 #number of properties 
@@ -172,6 +191,13 @@ ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
 ```
 #Quick Analysis
 There is no statistically significant trend in the data, which is consistent with the findings from the plot given that the trendline shows a very minimal increase. 
+
+```{r buyouts amount paid with inflation}
+inflation_InSituAP_ts <- ts(inflationadjusted$InflationAdjusted_INSITUAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_insitu_inflation <- Kendall::MannKendall(inflation_InSituAP_ts)
+summary(kendall_insitu_inflation)
+```
 
 ## Generating Summary Statistics and Table
 
