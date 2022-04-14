@@ -1,0 +1,114 @@
+---
+title: "SpatialAnalysis"
+author: "Maggie O'Shea"
+date: "4/12/2022"
+output: html_document
+---
+#Maggie note to self (where left off)
+* Merged files but data won't transfer from flood properties to spatial data - waiting to hear from John --> should be easy to map from there 
+
+```{r setup, include=FALSE}
+library(tidyverse, quietly = TRUE)
+library(lubridate)
+
+#install.packages('sf')
+library(sf)
+#install.packages('leaflet')
+library(leaflet)
+#install.packages('mapview')
+library(mapview)
+
+SOVI_data <- st_read('./Data/Raw_Data/US_States_SOVI_Infographics.geojson') 
+raw_flooddata <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
+
+#Removed shapefile from code because it was too big to push up 
+#USA_counties <- st_read('./Data/Raw_Data/USA_Counties/USA_Counties.shp')
+USA_countyboundaries <- st_read('./Data/Raw_Data/us-county-boundaries.geojson')
+
+```
+
+```{r wrangle}
+USA_countyboundaries$namelsad <- sub(" County", "", USA_countyboundaries$namelsad)
+USA_wrangle <- USA_countyboundaries%>%
+  mutate("statecounty" = paste(state_name, "_", namelsad))
+
+```
+
+##Wrangle by County
+
+#Actual Amount Paid 
+```{r}
+#All flood properties
+clean_hazardprops <- raw_flooddata %>%
+  filter(!is.na(actualAmountPaid))%>%
+  filter(actualAmountPaid > 0)
+
+county.floodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(All_propertiesamountpaid = sum(actualAmountPaid))
+
+#Ex situ
+county.buyoutfloodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  group_by(county, state)%>%
+  summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
+
+#In situ
+county.insitufloodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(insituproperties_amountpaid = sum(actualAmountPaid))
+
+in.ex.county <- left_join(county.buyoutfloodproperties_amountpaid, county.insitufloodproperties_amountpaid, by = c("county", "state"))
+
+amountpaid.countyall <- left_join(in.ex.county, county.floodproperties_amountpaid, by = c("county", "state"))
+
+```
+
+#Number of Properties
+```{r}
+county.floodproperties_number <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(All_propertiesamountpaid = sum(numberOfProperties))
+
+#Ex situ
+county.buyoutfloodproperties <- hazard_properties %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  group_by(county, state)%>%
+  summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
+
+#In situ
+county.insitufloodproperties <- hazard_properties  %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(insitupropertiesperyear = sum(numberOfProperties))
+
+insitu.props <- left_join(county.insitufloodproperties, county.buyoutfloodproperties, by = c("county", "state"))
+numberofprops.county <- left_join(insitu.props, county.floodproperties_number, by = c("county", "state"))
+```
+
+```{r make and wrangle combiined dataset}
+alldata.bycounty <- left_join(numberofprops.county, amountpaid.countyall, by = c("county", "state"))
+
+databycounty.wrangle <- alldata.bycounty%>%
+  mutate("statecounty" = paste(state, "_", county))
+databycounty.wrangle[is.na(databycounty.wrangle)] <- 0  
+
+
+flood_counties_join <- left_join(USA_wrangle, databycounty.wrangle, by = "statecounty")
+flood_counties_merge <-  merge(x = USA_wrangle,
+                           y = databycounty.wrangle, 
+                           by.x = "statecounty", 
+                           by.y = "statecounty" )
+
+class(flood_counties_join)
+class(flood_counties_merge)
+```
+
+
+```{r}
+mapview(flood_counties_merge, zcol='All_propertiesamountpaid')
+```
+
