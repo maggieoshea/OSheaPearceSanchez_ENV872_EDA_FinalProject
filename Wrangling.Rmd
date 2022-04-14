@@ -59,7 +59,7 @@ library(zoo)
 library(Kendall)
 library(tseries)
 
-hazard_properties <- read.csv("./Data /Raw Data /HazardMitigationAssistanceMitigatedProperties.csv")
+hazard_properties <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv")
 ```
 
 #Note: 

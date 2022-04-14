@@ -12,11 +12,11 @@ library(sf)
 library(leaflet)
 library(mapview)
 
-FEMA_disaster_assistance <- read.csv("./Data /Raw Data /HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
+FEMA_disaster_assistance <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
 
-FEMA_open_data <- read.csv("./Data /Raw Data /OpenFemaDataSets.csv", stringsAsFactors = TRUE)
+FEMA_open_data <- read.csv("./Data/Raw_Data/OpenFemaDataSets.csv", stringsAsFactors = TRUE)
 
-FEMA_disaster_projects <- read.csv("./Data /Raw Data /HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
+FEMA_disaster_projects <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
 
 summary(FEMA_disaster_assistance)
 
