@@ -13,17 +13,17 @@ I added a few things to the document: I ran the time series with all the TS obje
 
 
 ```{r setup, include=FALSE}
-State_data <- read.csv("./Data /alldatabystate.csv", stringsAsFactors = TRUE)
+State_data <- read.csv("./Data/alldatabystate.csv", stringsAsFactors = TRUE)
 
-State_data_dates <- read.csv("./Data /Raw Data /HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
+State_data_dates <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceProjects.csv", stringsAsFactors = TRUE)
 State_data_dates$dateClosed <- as.Date(State_data_dates$dateApproved,  format = "%Y-%m-%d")
 #I was looking at the dateclosed/dateapproved numbers and it looks like a LOT of them say 1970 but then the programFy says all different years - I wonder which one is accurate?
 
-State_year <- read.csv("./Data /bystateandyearflood.csv", stringsAsFactors = TRUE)
+State_year <- read.csv("./Data/bystateandyearflood.csv", stringsAsFactors = TRUE)
 State_year$programFy <- as.Date(State_year$programFy, format = "%Y-%m-%d")
 
 
-Databyyear <- read.csv("./Data /alldatabyyear.csv")
+Databyyear <- read.csv("./Data/alldatabyyear.csv")
 
 #summary(State_data)
 #summary(State_year)
