@@ -128,6 +128,8 @@ inflation_insituprops_amountpaid <- insitufloodproperties_amountpaid%>%
 ```
 
 
+
+
 ```{r visualize amount paid}
 
 ggplot(floodproperties_amountpaid, aes(y= Floodproperties_amountpaid, x = programFy)) + 

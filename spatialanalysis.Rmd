@@ -17,9 +17,11 @@ library(sf)
 library(leaflet)
 #install.packages('mapview')
 library(mapview)
+library(priceR)
 
 raw_flooddata <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
 
+inflationadjusted <- read.csv('./Data/inflationadjusted.csv')
 #Removed shapefile from code because it was too big to push up 
 #USA_counties <- st_read('./Data/Raw_Data/USA_Counties/USA_Counties.shp')
 NC_countyboundaries <- st_read('./Data/Raw_Data/North_Carolina_State_and_County_Boundary_Polygons')
@@ -27,9 +29,9 @@ NC_countyboundaries <- st_read('./Data/Raw_Data/North_Carolina_State_and_County_
 ```
 
 
-##Wrangle by County
+## Wrangle by County
 
-#Actual Amount Paid 
+# Actual Amount Paid 
 ```{r}
 #All flood properties
 NC_clean_hazardprops <- raw_flooddata %>%
@@ -60,7 +62,52 @@ amountpaid.NCall <- left_join(in.ex.county, NC.floodproperties_amountpaid, by = 
 
 ```
 
-#Number of Properties
+# Amount Paid Inflation Adjustments
+
+```{r}
+cleaner_hazardprops <- NC_clean_hazardprops%>%
+  filter(county != "")
+
+wYear_NC.paid <- cleaner_hazardprops  %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state, programFy)%>%
+  summarise(All_propertiesamountpaid = sum(actualAmountPaid))
+
+#Ex situ
+wyear_NC.buyoutpaid<- cleaner_hazardprops  %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  group_by(county, state, programFy)%>%
+  summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
+
+#In situ
+wyear_NC.insitupaid <- cleaner_hazardprops  %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state, programFy)%>%
+  summarise(insituproperties_amountpaid = sum(actualAmountPaid))
+
+
+Allpaid_inflation <- priceR::adjust_for_inflation(wYear_NC.paid$All_propertiesamountpaid, wYear_NC.paid$programFy, "US", to_date = 2020)
+vector_allinflation <- c(Allpaid_inflation)
+
+inflat_paidAll <- wYear_NC.paid %>%
+  mutate('Allpaid_inflation' = vector_allinflation)
+
+#Ex situ
+
+exsitupaid_inflation <- priceR::adjust_for_inflation(wyear_NC.buyoutpaid$Buyouts_propertiesamountpaid, wyear_NC.buyoutpaid$programFy, "US", to_date = 2020)
+
+inflation_buyoutpaid.county <- wyear_NC.buyoutpaid%>%
+  mutate("InflationAdjusted_BUYOUTAmountpaid" = exsitupaid_inflation)
+
+#In situ
+insitupaid_inflation <- priceR::adjust_for_inflation(wyear_NC.insitupaid$insituproperties_amountpaid, wyear_NC.insitupaid$programFy, "US", to_date = 2020)
+
+inflation_insituprops_amountpaid <- wyear_NC.insitupaid%>%
+  mutate("InflationAdjusted_INSITUAmountpaid" = insitu_inflation)
+```
+
+# Number of Properties
+
 ```{r}
 NC.floodproperties_number <- NC_clean_hazardprops %>%
   filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
