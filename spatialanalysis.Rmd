@@ -130,7 +130,7 @@ insitu.props <- left_join(NC.insitufloodproperties, NC.buyoutfloodproperties, by
 numberofprops.NC <- left_join(insitu.props, NC.floodproperties_number, by = c("county", "state"))
 ```
 
-```{r make and wrangle combiined dataset}
+```{r make and wrangle combined dataset}
 alldata.bycountyNC <- left_join(numberofprops.NC, amountpaid.NCall, by = c("county", "state"))%>%
   mutate("County" = county)
 
@@ -173,8 +173,19 @@ ggplot(data=flood_counties_join) +
   )+
   theme(plot.title = element_text(size=12, hjust=0.5), 
         legend.text = element_text(size = 10))
-```
 
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=All_propertiesamountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for Flooding Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+```
+# Note from Maggie: 
+Comparing these maps is weird because the first one shows dare county really dark with lots of properties receiving grants, while the second one shows that at 0 dollars paid for adaptation. I trust the number of properties a bit more - maybe we just do spatial analysis on the number of properties as I saw in the data that those numbers were more reliable whereas in some cases they would have an entry with a few properties renovated/bought out and then no number for amount paid which I assume just means it wasn't reported in all cases? We also could include both of these and use it as a way to talk about limitations in the dataset. 
 
 ```{r}
 ggplot(data=flood_counties_join) +
@@ -200,4 +211,26 @@ ggplot(data=flood_counties_join) +
 # Notes from Maggie: 
 This is interesting because it shows that buyouts are concentrated near what is likely riverine flooding, while coastal flooding gets more in-situ adaptation money. You can also see in the coastal region that inland counties have more buyouts than coastal which could indicate that wealthier coastal homeowners are able to do more to keep their home where it is, whereas inland communities are being bought out. 
 
+```{r}
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=Buyouts_propertiesamountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for Ex-Situ Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=insituproperties_amountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for In-Situ Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+```
 
