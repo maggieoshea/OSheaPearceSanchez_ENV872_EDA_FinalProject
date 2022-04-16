@@ -1,0 +1,109 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Insert title of project here"
+subtitle: "https://github.com/maggieoshea/OSheaPearceSanchez_ENV872_EDA_FinalProject.git"
+author: "Maggie O'Shea, Garrett Pearce, and Diane Sanchez"
+fontsize: 12pt
+mainfont: Times New Roman
+
+---
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+# Set your working directory
+getwd()
+
+# Load your packages
+library(tidyverse)
+library(lubridate)
+#install.packages('sf')
+library(sf)
+#install.packages('leaflet')
+library(leaflet)
+#install.packages('mapview')
+library(mapview)
+
+# Set your ggplot theme
+finalprojecttheme <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=14, hjust=0.5), 
+            plot.subtitle = element_text(size=10, hjust=0.5))
+finalprojecttheme_longtitle <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=11), 
+            plot.subtitle = element_text(size=10))
+
+# Load your datasets
+
+## Load primary datasets
+inflation_data <- read.csv("./Data/inflationadjusted.csv")
+databyyear <- read.csv("./Data/alldatabyyear.csv")
+NC_flooddata<- read.csv("./Data/databycounty_forspatial.csv")
+
+## Load Time Series Results 
+ts_propall <- read.csv("./Data/tsresults_allprops.csv")
+ts_paidall <- read.csv("./Data/tsresults_allpaid.csv")
+ts_paidinflationall <- read.csv("./Data/tsresults_allpaidinflation.csv")
+ts_buyoutprops <- read.csv("./Data/tsresults_buyoutprops.csv")
+ts_buyoutpaid <- read.csv("./Data/tsresults_buyoutamountpaid.csv")
+ts_buyoutpaidinflation <- read.csv("./Data/tsresults_buyoutamountpaidinflation.csv")
+ts_insituprops <- read.csv("./Data/tsresults_insituprops.csv")
+ts_insitupaid <- read.csv("./Data/tsresults_insituamountpaid.csv")
+ts_insitupaidinflation <- read.csv("./Data/tsresults_insituamountpaidinflation.csv")
+
+
+```
+
+
+# Rationale and Research Questions
+
+
+
+\newpage
+
+# Dataset Information
+
+
+
+\newpage
+
+# Exploratory Analysis 
+
+
+
+\newpage
+
+# Analysis
+
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 

@@ -89,6 +89,7 @@ wyear_NC.insitupaid <- cleaner_hazardprops  %>%
 Allpaid_inflation <- priceR::adjust_for_inflation(wYear_NC.paid$All_propertiesamountpaid, wYear_NC.paid$programFy, "US", to_date = 2020)
 vector_allinflation <- c(Allpaid_inflation)
 
+
 inflat_paidAll <- wYear_NC.paid %>%
   mutate('Allpaid_inflation' = vector_allinflation)
 
@@ -137,6 +138,8 @@ alldata.bycountyNC <- left_join(numberofprops.NC, amountpaid.NCall, by = c("coun
 #Turn NAs to zeros because [assumption we are making is..] those counties with no value in column indicates that they did not receive a grant
 
 alldata.bycountyNC[is.na(alldata.bycountyNC)] <- 0  
+
+write.csv(alldata.bycountyNC, "./Data/databycounty_forspatial.csv")
 
 flood_counties_join <- left_join(NC_countyboundaries, alldata.bycountyNC, by = "County")
 flood_counties_merge <-  merge(x = NC_countyboundaries,

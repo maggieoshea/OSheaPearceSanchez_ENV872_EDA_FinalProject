@@ -11,7 +11,8 @@ editor_options:
 #Note from Maggie: 
 I added a few things to the document: I ran the time series with all the TS objects you made for number of properties, amount paid and exsitu/insitu. Because that just tests is there a statistically significant trend, I then plotted each of them so you can see the direction of the trend. I also added a few notes interpreting the findings of the time series analysis, and the plot together. I tried to keep it relatively neat but hopefully it's not too overwhelming! 
 
-
+# Overall Findings: 
+The only statistically significant trend (after adjusting for inflation) is the number of properties receiving funding for in-situ adaptation. That still is really interesting because it shows that our trends in amount paid are just a reflection of inflation, but we can say that more properites are receiving in-situ funding over time. Maybe that is because we are early in the sea level rise impacts in that maybe if we did the same study in 10 years there would be more buyouts but right now it isn't too bad so people can still stay where they are? However, to actually know if that's true we'd need a deeper spatial analysis to see if the areas with increased funding is in fact coastal. 
 
 ```{r, include = FALSE, message=FALSE, warning=FALSE}
 library(jtools)
@@ -30,6 +31,9 @@ library(zoo)
 library(Kendall)
 #install.packages("tseries")
 library(tseries)
+#install.packages("kableExtra")
+library(kableExtra)
+library(gt)
 ```
 
 ```{r setup, message = FALSE, include = FALSE, message=FALSE}
@@ -62,6 +66,13 @@ Flood_properties_ts <- ts(Databyyear$Floodpropertiesperyear,
                           start=c(1989,1, frequency = 12))
 kendall_properties <- Kendall::MannKendall(Flood_properties_ts)
 summary(kendall_properties)
+
+allprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.0, 1))
+
+df.allprops <- as.data.frame(do.call(cbind, allprops.list))
+write.csv(df.allprops, "./Data/tsresults_allprops.csv")
+
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -84,7 +95,21 @@ Flood_amounts_paid_ts <- ts(Databyyear$Floodproperties_amountpaid,
                             start=c(1989,1, frequency=12))
 kendall_amountpaid <- Kendall::MannKendall(Flood_amounts_paid_ts )
 summary(kendall_amountpaid)
+
+allpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.361, 0.005))
+
+df.allpaid <- as.data.frame(do.call(cbind, allpaid.list))
+write.csv(df.allpaid, "./Data/tsresults_allpaid.csv")
 ```
+
+# Time Series Analysis of Trends in Amount Paid Per year
+          | Value
+-------------------
+Tau       |  0.361
+P-value   |  0.005
+
+
 
 ```{r message=FALSE, warning=FALSE}
 ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
@@ -110,6 +135,24 @@ kendall_amountpaid_inflation <- Kendall::MannKendall(inflation_Flood_AP_ts)
 summary(kendall_amountpaid_inflation)
 ```
 
+```{r make results table}
+titlesvector <- c("Tau", "P-value")
+values_allpaidinflation <- c(0.087, 0.568)
+
+allpaidinflat.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.087, 0.568))
+
+df.allpaidinflation <- as.data.frame(do.call(cbind, allpaidinflat.list))
+write.csv(df.allpaidinflation, "./Data/tsresults_allpaidinflation.csv")
+
+results_allpaidinflat <- gt(df.allpaidinflation )%>%
+  tab_header(
+    title = md("Time Series Results: Total Amount Paid *Inflation Adjusted*")
+  )
+results_allpaidinflat
+```
+
+
 ```{r message=FALSE, warning=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
   geom_line() +
@@ -126,6 +169,7 @@ ggplot(inflationadjusted, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)
 
 Tau would indicate a slight positive trend, but the p-value is 0.57 so it is not a statistically significant trend. This may indicate that our trends in amount paid are just a reflection of inflation and not a reflection of any real trend. 
 
+
 #buyout time series 
 ```{r}
 #number of properties 
@@ -133,8 +177,20 @@ Number_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesperyear,
                        start=c(1989,1, frequency= 12))
 kendall_propertiesbuyouts <- Kendall::MannKendall(Number_Flood_buyouts_ts)
 summary(kendall_propertiesbuyouts)
-#P-value of 0.57 .. not significant, no trend. 
+
+buyoutprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(-0.073, 0.570))
+
+df.buyoutsprops <- as.data.frame(do.call(cbind, buyoutprops.list))
+write.csv(df.buyoutsprops, "./Data/tsresults_buyoutprops.csv")
+
+results_buyoutprops <- gt(df.buyoutsprops)%>%
+  tab_header(
+    title = md("Time Series Results: Number of Buyouts")
+  )
+results_buyoutprops
 ```
+
 
 ```{r message=FALSE, warning=FALSE}
 ggplot(Databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
@@ -159,8 +215,20 @@ Paid_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesamountpaid,
 
 kendall_paidbuyouts <- Kendall::MannKendall(Paid_Flood_buyouts_ts)
 summary(kendall_paidbuyouts)
-#P-value of 0.003! Amazing! There is a statistically significant monotonic trend in the amount paid over time. 
+
+buyoutamountpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.374, 0.003))
+
+df.buyoutamountpaid <- as.data.frame(do.call(cbind, buyoutamountpaid.list))
+write.csv(df.buyoutsprops, "./Data/tsresults_buyoutamountpaid.csv")
+
 ```
+
+# Time Series Analysis of Monotonic Trends in Total Amount Paid for Buyouts 
+          | Value
+-------------------
+Tau       |  0.374
+P-value   |  0.003
 
 ```{r message=FALSE, warning=FALSE, echo= FALSE}
 ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
@@ -183,7 +251,19 @@ inflation_buyoutsAP_ts <- ts(inflationadjusted$InflationAdjusted_BUYOUTAmountpai
                             start=c(1989,1, frequency=12))
 kendall_Buyouts_inflation <- Kendall::MannKendall(inflation_buyoutsAP_ts)
 summary(kendall_Buyouts_inflation)
+
+buyoutamountpaidinflation.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.101, 0.503))
+
+df.buyoutamountpaidinflation <- as.data.frame(do.call(cbind, buyoutamountpaidinflation.list))
+write.csv(df.buyoutamountpaidinflation , "./Data/tsresults_buyoutamountpaidinflation.csv")
 ```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for Buyouts *Inflation Adjusted*
+          | Value
+-------------------
+Tau       |  0.101
+P-value   |  0.503
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
@@ -209,8 +289,19 @@ Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear,
 
 kendall_propertiesinsitu <- Kendall::MannKendall(Number_Flood_insut_paid_ts )
 summary(kendall_propertiesinsitu)
+
+insituprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.44, 0.0004))
+
+df.insituprops <- as.data.frame(do.call(cbind, insituprops.list))
+write.csv(df.insituprops , "./Data/tsresults_insituprops.csv")
 ```
 
+# Time Series Analysis of Monotonic Trends in Number of Properties Receiving In Situ Funding
+          | Value
+-------------------
+Tau       |  0.44
+P-value   |  0.0004
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(Databyyear, aes(y= insitupropertiesperyear, x = programFy)) + 
@@ -234,10 +325,21 @@ This monotonic trend is also statistically significant with a p-value of 0.0004.
 #amounts paid
 Paid_Flood_insut_ts <- ts(Databyyear$insituproperties_amountpaid, 
                             start=c(1989,1, frequency=12))
-plot(Paid_Flood_insut_ts, xlab="Year", ylab="Millions Paid for Insut")
 kendall_paidinsitu <- Kendall::MannKendall(Paid_Flood_insut_ts)
 summary(kendall_paidinsitu )
+
+insituamountpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.167, 0.207))
+
+df.insituamountpaid <- as.data.frame(do.call(cbind, insituamountpaid.list))
+write.csv(df.insituamountpaid , "./Data/tsresults_insituamountpaid.csv")
 ```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation
+          | Value
+-------------------
+Tau       |  0.167
+P-value   |  0.207
 
 ```{r insitu plot, message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 
@@ -259,7 +361,19 @@ inflation_InSituAP_ts <- ts(inflationadjusted$InflationAdjusted_INSITUAmountpaid
                             start=c(1989,1, frequency=12))
 kendall_insitu_inflation <- Kendall::MannKendall(inflation_InSituAP_ts)
 summary(kendall_insitu_inflation)
+
+insituamountpaidinflation.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.123, 0.484))
+
+df.insituamountpaidinflation <- as.data.frame(do.call(cbind, insituamountpaidinflation.list))
+write.csv(df.insituamountpaidinflation , "./Data/tsresults_insituamountpaidinflation.csv")
 ```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation *Inflation Adjusted*
+          | Value
+-------------------
+Tau       |  0.123
+P-value   |  0.484
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(inflationadjusted, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
