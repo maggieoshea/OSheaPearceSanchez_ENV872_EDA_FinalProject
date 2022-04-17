@@ -85,12 +85,3 @@ state_data_trend1 <- Kendall::SeasonalMannKendall(State_data_ts)
 summary(state_data_trend1)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
