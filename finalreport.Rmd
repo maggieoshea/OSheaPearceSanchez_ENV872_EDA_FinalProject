@@ -36,7 +36,7 @@ library(sf)
 #install.packages('leaflet')
 library(leaflet)
 #install.packages('mapview')
-install.packages("mdthemes")
+#install.packages("mdthemes")
 library(mdthemes)
 library(gt)
 library(RColorBrewer)
@@ -103,9 +103,9 @@ The temporal scale of the research was defined by the FEMA Mitigated Properties 
 
 # 2.1 Dataset Background and Retrieval: 
 
-We used data managed by the Federal Emergency Management Agency’s National Emergency Management Information Systems, downloaded directly in a CSV format through FEMA’s OpenFEMA resource. The dataset includes the record of properties that received grant assistance for hazard mitigation through any of the Hazard Mitigation Assistance grant programs, programs administered by FEMA that seek to reduce losses from disasters as well as protect life and property in the face of hazards (FEMA n.d.). This includes: the Hazard Mitigation Grant Program, the Flood Mitigation Assistance Grant Program, and the Pre-Disaster Mitigation Grant Program (ibid.). Entries prior to 2012 also include grants received through the Repetitive Flood Claims Grant program and Severe Repetitive Loss Grant Program which both were eliminated through the Biggert Water Flood Insurance Reform Act of 2012 (ibid.). Each entry includes data such as the total amount paid, the number of properties receiving support, the hazard that the grant is adapting against, the program year, and others. 
+We used data managed by the Federal Emergency Management Agency’s National Emergency Management Information Systems, downloaded directly in a CSV format through FEMA’s OpenFEMA resource. The dataset includes the record of properties that received grant assistance for hazard mitigation through any of the Hazard Mitigation Assistance grant programs, programs administered by FEMA that seek to reduce losses from disasters as well as protect life and property in the face of hazards (FEMA 2022). This includes: the Hazard Mitigation Grant Program, the Flood Mitigation Assistance Grant Program, and the Pre-Disaster Mitigation Grant Program (ibid.). Entries prior to 2012 also include grants received through the Repetitive Flood Claims Grant program and Severe Repetitive Loss Grant Program which both were eliminated through the Biggert Water Flood Insurance Reform Act of 2012 (ibid.). Each entry includes data such as the total amount paid, the number of properties receiving support, the hazard that the grant is adapting against, the program year, and others. 
 
-For the spatial analysis, the county boundaries for North Carolina were downloaded from the OpenESRI platform which had the State of North Carolina’s Emergency Management Agency’s best current available data as of 2020. These boundaries were identified through sources including the North Carolina Geodetic Survey, the North Carolina Department of Transportation, the United States Geological Survey, as well as field surveys that have been recorded by the respective county (ArcGIS Hub 2020). 
+For the spatial analysis, the county boundaries for North Carolina were downloaded from the OpenESRI platform which had the State of North Carolina’s Emergency Management Agency’s best current available data as of 2020. These boundaries were identified through sources including the North Carolina Geodetic Survey, the North Carolina Department of Transportation, the United States Geological Survey, as well as field surveys that have been recorded by the respective county (State of North Carolina 2020). 
 
 # 2.2 Data Wrangling
 
@@ -264,7 +264,7 @@ ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
     y = "Amount Paid (USD)")
 ```
 
-Finally, figures 3 and 4 show this same data over time specifically focusing on the number of properties and total amount paid for all grants that went towards flooding adaptation. These graphs, as well as the graphs of ex-situ and in-situ data over time, are further examined in the analysis section including trendlines to complement the time series analysis. 
+Finally, figures 3 and 4 show this same data over time specifically focusing on the number of properties and total amount paid for all grants that went towards flooding adaptation. These graphs, as well as the graphs of ex-situ and in-situ data over time, are further examined in the analysis section including trend-lines to complement the time series analysis. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
@@ -419,7 +419,7 @@ ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
 The statistically significant monotonic trend in the total amount paid for buyouts (p = 0.003) can be found in figure 9. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
+ggplot(databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "steelblue3", show.legend = FALSE)+
   labs(title = "Total Amount Paid for Ex-Situ Flood Adaptation in the United States",
@@ -530,7 +530,7 @@ ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
 
 
 ```{r warning = FALSE, echo = FALSE, message = FALSE}
-ggplot(inflationadjusted, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
+ggplot(inflation_data, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "steelblue4", show.legend = FALSE)+
   labs(title = "Total Amount Paid for In Situ Adaptation in the United States (*Inflation Adjusted*)",
@@ -652,15 +652,39 @@ ggplot(data=flood_counties_join) +
         legend.text = element_text(size = 10))
 ```
 
-In comparing these two maps it is very clear that the ex-situ adaptation funding is concentrated in the inland county whereas the in-situ adaptation funding is concentrated on the coast. This is an important finding, suggesting that buyouts occur more often inland likely from riverine flooding whereas in-situ adaptation may be more common for coastal flooding. This would pair well with the findings from the time-series analysis which found an increase in the number of properties receiving in-situ funding but no trend in the number of properties receiving ex-situ grants. Climate change has made the sea levels rise increasing coastal flooding dramatically, a trend that will only increase. If ex-situ adaptation primarily serves riverine flooding, these grants would not be impacted by sea level rise trends, and if in-situ funding primarily serves coastal communities there would be an associated increasing trend in in-situ grants. 
+In comparing these two maps it is very clear that the ex-situ adaptation funding is concentrated in the inland county whereas the in-situ adaptation funding is concentrated on the coast. This is an important finding, suggesting that buyouts occur more often inland likely from riverine flooding whereas in-situ adaptation may be more common for coastal flooding. 
 
 
 \newpage
 
-# Summary and Conclusions
+## 5. Summary and Conclusions
 
+# 5.1 Lack of Overall Trends in Flooding Adaptation 
+
+For almost all of the time series analyses, we found no statistically significant trend. This was true for trends in all adaptation types for number of properties and total amount paid (after inflation adjustments), as well as for buyouts for number of properties and total amount paid (after inflation adjustments). There was also no statistically significant trend in the total amount paid for in-situ adaptation. This is inconsistent with the initial hypothesis that all of these would be increasing due to the increase in flooding hazards across the United States. However, a lack of a trend is still an important finding in that it suggests that further analysis is needed to understand why these resources are not being used. This could indicate that despite potential increases in flooding, communities are not experiencing this to the level that an adaptation measure would be necessary. Alternatively, this could indicate that communities may just not be aware of the resources that are available to them in the face of flooding hazards. The lack of trends in buyouts may be a result of a number of factors given the complicated nature of buyouts socially and economically. Communities may be less apt to seek out a buyout because of the challenges of moving, going through the bureaucratic process, forming a new community, finding a new home, tc. and it may not be a reflection of their exposure to hazard. 
+
+# 5.2 Trends in In-Situ Flooding Adaptation: Spatial and Temporal
+
+The only statistically significant trends, after adjusting the total amount paid values for inflation, was the number of properties receiving in-situ adaptation funding. In this case, again, the driver of this trend is unknown. However, in considering this, the spatial analysis can complement the interpretation of these findings. The spatial analysis showed that the number of properties in North Carolina receiving in-situ adaptation grants was heavily concentrated near the coast, while the ex-situ adaptation properties were much more present inland from the coast. 
+
+While there are many drivers of flooding and changes in flooding, climate change has made the sea levels rise increasing coastal flooding dramatically. If ex-situ adaptation primarily serves riverine flooding, these grants would not be impacted by sea level rise trends. Similarly, if in-situ funding primarily serves coastal communities one would expect an increasing trend in in-situ grants associated with the increase in sea level. This is reflected in our findings for both in-situ and ex-situ trends in the number of properties over time, with the spatial analyis providing insight on how to consider these findings. It is possible that the increase in in-situ adaptation is associated with the increase in sea level whereas the ex-situ adaptation funding is more responsive to changes in inland flooding. However, this is just a hypothesis based on the findings from this analysis. A nationwide analysis of the spatial trends in in-situ vs. ex-situ adaptation is necessary to determine if this is consistent across the United States and then a deeper analysis is necessary to identify drivers of these trends such as sea level rise. 
+
+# Opportunities for Future Research
+
+The findings from this analysis provided foundations for future research on trends in adaptation funding in the United States. Extending the spatial analysis to include the entirety of the United States would allow an exploration of the trends in ex-situ and in-situ grants beyond those in North Carolina to identify if these are representative of the rest of the United States. Furthermore, deeper analysis that compare these trends with those of sea level rise, as well as socio-economic factors such as the cost of adaptation, would allow researchers to begin to identify potential drivers of these trends. 
 
 \newpage
 
 # References
-<add references here if relevant, otherwise delete this section> 
+State of North Carolina. 2020. "North Carolina State and County Boundary Polygons." *ArcGIS Hub.* https://hub.arcgis.com/datasets/NCEM-GIS::north-carolina-state-and-county-boundary-polygons/about
+
+Environmental Protection Agency. 2020. "Climate Change Indicators: Coastal Flooding." *Climate Change Indicators.* https://www.epa.gov/climate-indicators/climate-change-indicators-coastal-flooding#:~:text=Data%20%7C%20Technical%20Documentation-,Key%20Points,Coasts%20(see%20Figure%202).
+
+Internal Displacement Monitoring Centre (IDMC). 2019. "United States of America: Figure Analysis, Displacement Related to Disasters." *IDMC.* https://www.internal-displacement.org/sites/default/files/inline-files/GRID-2019-Disasters-Figure-Analysis-UnitedStates.pdf 
+
+Lindsey, R. 2022. "Climate Change: Global Sea Level." *Climate.gov.* https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level 
+
+Federal Emergency Management Agency (FEMA). 2022. "OpeFEMA Dataset: Hazard Mitigation Assistance Mitigated Properties - v2." *Reports & Data.* https://www.fema.gov/openfema-data-page/hazard-mitigation-assistance-mitigated-properties-v2
+
+Wing O., Lehman, W., Bates, P., Sampson, C., Quinn, N., Smith, A., Neal, J., Porter, J., & Kousky, C. 2022. "Inequitable patterns of US flood risk in the Anthropocene." *Nature* 12:
+https://www.nature.com/articles/s41558-021-01265-6

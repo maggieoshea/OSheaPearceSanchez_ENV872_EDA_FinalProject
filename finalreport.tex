@@ -55,46 +55,6 @@
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=2.54cm]{geometry}
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -112,6 +72,10 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{longtable}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -120,7 +84,7 @@
 \maketitle
 
 \#Notes to self : * Don't forget to add figure captions to exploratory
-analysis
+analysis through the figcap feature
 
 \newpage
 \tableofcontents 
@@ -131,7 +95,7 @@ analysis
 \newpage
 
 \hypertarget{rationale-and-research-questions}{%
-\subsection{Rationale and Research
+\subsection{1. Rationale and Research
 Questions}\label{rationale-and-research-questions}}
 
 Extreme weather events and natural disasters seem to be on the rise
@@ -190,10 +154,10 @@ potential spatial trends in ex-situ vs.~in-situ adaptation funding.
 \newpage
 
 \hypertarget{dataset-information}{%
-\subsection{Dataset Information}\label{dataset-information}}
+\subsection{2. Dataset Information}\label{dataset-information}}
 
 \hypertarget{dataset-background-and-retrieval}{%
-\section{Dataset Background and
+\section{2.1 Dataset Background and
 Retrieval:}\label{dataset-background-and-retrieval}}
 
 We used data managed by the Federal Emergency Management Agency's
@@ -203,7 +167,7 @@ the record of properties that received grant assistance for hazard
 mitigation through any of the Hazard Mitigation Assistance grant
 programs, programs administered by FEMA that seek to reduce losses from
 disasters as well as protect life and property in the face of hazards
-(FEMA n.d.). This includes: the Hazard Mitigation Grant Program, the
+(FEMA 2022). This includes: the Hazard Mitigation Grant Program, the
 Flood Mitigation Assistance Grant Program, and the Pre-Disaster
 Mitigation Grant Program (ibid.). Entries prior to 2012 also include
 grants received through the Repetitive Flood Claims Grant program and
@@ -219,11 +183,11 @@ Carolina's Emergency Management Agency's best current available data as
 of 2020. These boundaries were identified through sources including the
 North Carolina Geodetic Survey, the North Carolina Department of
 Transportation, the United States Geological Survey, as well as field
-surveys that have been recorded by the respective county (ArcGIS Hub
-2020).
+surveys that have been recorded by the respective county (State of North
+Carolina 2020).
 
 \hypertarget{data-wrangling}{%
-\section{Data Wrangling}\label{data-wrangling}}
+\section{2.2 Data Wrangling}\label{data-wrangling}}
 
 The mitigated properties dataset required three different types of
 wrangling for the analysis. First, we wrangled the data to result in a
@@ -263,10 +227,38 @@ of the total amount paid values per year for all adaptation, ex-situ,
 and in-situ for inflation. Summary statistics for the respective
 wrangled datasets can be found in table 2.
 
+\captionsetup[table]{labelformat=empty,skip=1pt}
+\begin{longtable}{lcrrr}
+\caption*{
+{\large Administration of Hazard Mitigation Grants}
+} \\ 
+\toprule
+Category & Observations & Mean & Median & SD \\ 
+\midrule
+\multicolumn{1}{l}{All Adaptation} \\ 
+\midrule
+Total Number of Properties & $32$ & $2,045.84$ & $1,733.00$ & $1,842$ \\ 
+Total Amount Paid (\$) & $32$ & $219,422,363.28$ & $41,158,369.00$ & $416,423,807$ \\ 
+\midrule
+\multicolumn{1}{l}{In-Situ Adaptation} \\ 
+\midrule
+In-Situ Number of Properties & $32$ & $500.41$ & $310.00$ & $732$ \\ 
+In-Situ Amount Paid (\$) & $32$ & $31,647,790.59$ & $348,242.00$ & $145,080,428$ \\ 
+\midrule
+\multicolumn{1}{l}{Ex-Situ Adaptation} \\ 
+\midrule
+Ex-Situ Number of Properties & $32$ & $1,599.12$ & $1,227.00$ & $1,643$ \\ 
+Ex-Situ Amount Paid (\$) & $32$ & $214,819,450.59$ & $39,533,213.00$ & $415,722,662$ \\ 
+ \bottomrule
+\end{longtable}
+\begin{minipage}{\linewidth}
+Source: Open FEMA Dataset\\ 
+\end{minipage}
+
 \newpage
 
 \hypertarget{exploratory-analysis}{%
-\subsection{Exploratory Analysis}\label{exploratory-analysis}}
+\subsection{3. Exploratory Analysis}\label{exploratory-analysis}}
 
 After wrangling the data, we explored the data both over time as well as
 totals for the number of properties and amount paid in our dataset,
@@ -276,18 +268,7 @@ that received adaptation flooding, comparing all of the properties with
 ex-situ and in-situ. The graph shows that more properties received
 ex-situ than in-situ grants by a considerable amount.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ totalprops\_pivot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Category, }\AttributeTok{y =}\NormalTok{ Total)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"lightblue4"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{( }
-    \AttributeTok{title =} \StringTok{"Total Properties Receiving Flooding Adaptation Funding from 1985 {-} 2020"}\NormalTok{, }
-    \AttributeTok{x =} \StringTok{"Adaptation Type"}\NormalTok{, }
-    \AttributeTok{y =} \StringTok{"Number of Properties"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-1-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-3-1.pdf}
 
 To examine this relationship further, we compared the total amount paid
 for all adaptation types and in-situ vs.~ex-situ in Figure 2. In
@@ -295,116 +276,398 @@ including both the total amount paid as reported by FEMA as well as
 these values adjusted to 2020 dollars, this figure helps to also show
 the difference that inflation makes in the resulting total amount paid.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ totals\_inflation\_pivot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Category, }\AttributeTok{y =}\NormalTok{ Total)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"lightblue3"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{( }
-    \AttributeTok{title =} \StringTok{"Total Amount Paid for Flooding Adaptation from 1985 {-} 2020"}\NormalTok{, }
-    \AttributeTok{subtitle =} \StringTok{"Amount Paid With and Without Inflation Adjustments to 2020 USD"}\NormalTok{,}
-    \AttributeTok{x =} \StringTok{"Adaptation Type"}\NormalTok{, }
-    \AttributeTok{y =} \StringTok{"Amount Paid (USD)"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-2-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-4-1.pdf}
 
 Finally, figures 3 and 4 show this same data over time specifically
 focusing on the number of properties and total amount paid for all
 grants that went towards flooding adaptation. These graphs, as well as
 the graphs of ex-situ and in-situ data over time, are further examined
-in the analysis section including trendlines to complement the time
+in the analysis section including trend-lines to complement the time
 series analysis.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ databyyear, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ programFy, }\AttributeTok{y =}\NormalTok{ Floodpropertiesperyear)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"lightblue4"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{( }
-    \AttributeTok{title =} \StringTok{"Number of Properties that Received Flood Adaptation Grants from 1985 {-} 2020"}\NormalTok{, }
-    \AttributeTok{x =} \StringTok{"Year"}\NormalTok{, }
-    \AttributeTok{y =} \StringTok{"Number of Properties"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-5-1.pdf}
 
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-3-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ inflation\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ programFy, }\AttributeTok{y =}\NormalTok{ InflationAdjusted\_AllAmountpaid)) }\SpecialCharTok{+}
-  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \StringTok{"lightblue3"}\NormalTok{)}\SpecialCharTok{+}
-  \FunctionTok{labs}\NormalTok{( }
-    \AttributeTok{title =} \StringTok{"Total Amount Paid for Flood Adaptation Grants 1985 {-} 2020"}\NormalTok{, }
-    \AttributeTok{x =} \StringTok{"Year"}\NormalTok{, }
-    \AttributeTok{y =} \StringTok{"Total Amount Paid (2020 USD)"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-4-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 \newpage
 
 \hypertarget{analysis}{%
-\subsection{Analysis}\label{analysis}}
+\subsection{4. Analysis}\label{analysis}}
 
-This analysis involved nine time series analysis that can be understood
-based on these more detailed research questions that the time series
-helps to answer:
+This analysis involved nine time series analysis which all sought to
+examine monotonic trends over time in the number of properties receiving
+grant funding for flooding adaptation and the total amount paid for
+flooding adaptation from these grants. These nine analysis can be
+understood based on the questions that each time series helps to answer:
 
-\begin{itemize}
-\item
-  Total Number of Properties: Is there a monotonic trend in the total
-  number of properties that receive grant funding over time?\\
-\item
-  Total Amount Paid for All Adaptation: Is there a monotonic trend in
-  the total amount paid for flooding adaptation grants over time?\\
-\item
-  Total Amount Paid - Inflation Adjusted: Is there (still) a monotonic
-  trend in the total amount paid for flooding adaptation grants over
-  time when adjusting for inflation to 2020 dollars?
-\item
-  Number of Buyouts: Is there a monotonic trend in the total number of
-  properties that received ex-situ grant funding, or funding to buyout
-  the property, over time?\\
-\item
-  Amount Paid for Buyouts: Is there a monotonic trend in the amount paid
-  for buyouts over time?\\
-\item
-  Amount Paid for Buyouts - Inflation Adjusted: Is there (still) a
-  monotonic trend in the amount paid for buyouts after adjusting for
-  inflation to 2020 dollars?
-\item
-  Number of In-Situ Properties: Is there a monotonic trend in the total
-  number of properties that received in-situ grant funding to adapt in
-  place over time?\\
-\item
-  Amount Paid for In-Situ Adaptation: Is there a monotonic trend in the
-  amount paid for in-situ adaptation over time?\\
-\item
-  Amount Paid for In-Situ Adaptation - Inflation Adjusted: Is there
-  (still) a monotonic trend in the amount paid for in-situ adaptation
-  after adjusting for inflation to 2020 dollars?
-\end{itemize}
+\textbf{\emph{All Adaptation}} * Total Number of Properties: Is there a
+monotonic trend in the total number of properties that receive grant
+funding over time? * Total Amount Paid for All Adaptation: Is there a
+monotonic trend in the total amount paid for flooding adaptation grants
+over time? * Total Amount Paid - Inflation Adjusted: Is there (still) a
+monotonic trend in the total amount paid for flooding adaptation grants
+over time when adjusting for inflation to 2020 dollars?
 
-\hypertarget{question-1-insert-specific-question-here-and-add-additional-subsections-for-additional-questions-below-if-needed}{%
-\subsection{Question 1: \textless insert specific question here and add
-additional subsections for additional questions below, if
-needed\textgreater{}}\label{question-1-insert-specific-question-here-and-add-additional-subsections-for-additional-questions-below-if-needed}}
+\textbf{\emph{Ex-Situ Adaptation}} * Number of Buyouts: Is there a
+monotonic trend in the total number of properties that received ex-situ
+grant funding, or funding to buyout the property, over time? * Amount
+Paid for Buyouts: Is there a monotonic trend in the amount paid for
+buyouts over time? * Amount Paid for Buyouts - Inflation Adjusted: Is
+there (still) a monotonic trend in the amount paid for buyouts after
+adjusting for inflation to 2020 dollars?
 
-\hypertarget{question-2}{%
-\subsection{Question 2:}\label{question-2}}
+\textbf{\emph{In-Situ Adaptation}} * Number of In-Situ Properties: Is
+there a monotonic trend in the total number of properties that received
+in-situ grant funding to adapt in place over time? * Amount Paid for
+In-Situ Adaptation: Is there a monotonic trend in the amount paid for
+in-situ adaptation over time? * Amount Paid for In-Situ Adaptation -
+Inflation Adjusted: Is there (still) a monotonic trend in the amount
+paid for in-situ adaptation after adjusting for inflation to 2020
+dollars?
+
+These data were also visualized through a spatial analysis of the number
+of properties and total amount paid for flood adaptation grants in North
+Carolina including for all grants, ex-situ grants, and in-situ grants.
+
+\hypertarget{all-adaptation-types}{%
+\section{4.1 All Adaptation Types}\label{all-adaptation-types}}
+
+Beginning with the analysis of all adaptation types, overall the only
+statistically significant monotonic trend found was the trend in the
+total amount paid for flood adaptation in the United States, before
+adjusting for inflation. The total number of properties that received
+adaptation funding from 1985 to 2020 did not have a statistically
+significant monotonic trend (p \textgreater{} 0.9) which is evident in
+figure 5 which shows the number of properties over time as well as the
+associated trend line.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+The second time series analysis which was statistically significant (p =
+0.004), showed an increasing trend (tau = 0.361) in the total amount
+paid over time for flood adaptation through FEMA. Figure 6 shows this
+data over time with the associated trend line.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+However, after adjusting the total amount paid for each year for
+inflation and thus making each value in 2020 dollars this trend was no
+longer statistically significant (p = 0.568). This can be seen in figure
+7 which shows the inflation adjusted values for total amount paid over
+time.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+A summary of each of these time series results can be found in table 3.
+
+\captionsetup[table]{labelformat=empty,skip=1pt}
+\begin{longtable}{lr}
+\caption*{
+{\large Time Series Analysis Results: \emph{\textbf{All Adaptation Types}}}
+} \\ 
+\toprule
+Measure & Result \\ 
+\midrule
+\multicolumn{1}{l}{Number of Properties} \\ 
+\midrule
+Tau & $0.000$ \\ 
+P-value & $1.000$ \\ 
+\midrule
+\multicolumn{1}{l}{Total Amount Paid} \\ 
+\midrule
+Tau & $0.087$ \\ 
+P-value & $0.568$ \\ 
+\midrule
+\multicolumn{1}{l}{Inflation Adjusted Total Amount Paid} \\ 
+\midrule
+Tau & $0.087$ \\ 
+P-value & $0.568$ \\ 
+ \bottomrule
+\end{longtable}
+
+These findings suggest that there is no statistically significant
+monotonic trend in the number of properties that receive grants for
+flooding adaptation nor the amount spent on flooding adaptation by the
+Federal Emergency Management Agency. Though there was a trend in the
+total amount paid, this trend was no longer present when adjusting for
+inflation suggesting that the trend was likely a reflection of inflation
+rather than of an increase in amount spent.
+
+\hypertarget{ex-situ-adaptation}{%
+\section{4.2 Ex-Situ Adaptation}\label{ex-situ-adaptation}}
+
+The second analysis involved the three time series analyses identifying
+possible monotonic trends in ex-situ adaptation between 1985 and 2020.
+Again, the only statistically significant monotonic trend was the trend
+in total amount paid for buyouts before adjusting for inflation. There
+does appear to be a declining trend in the total number of properties
+that received ex-situ funding from FEMA as seen in Figure 8, however,
+the time series analysis reveals that this is not a statistically
+significant trend (p = 0.57).
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+The statistically significant monotonic trend in the total amount paid
+for buyouts (p = 0.003) can be found in figure 9.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+However, after adjusting for inflation, again, the trend in total amount
+paid was no longer found to be statistically significant with a p-value
+of 0.503 after adjusting each total amount paid value to 2020 dollars.
+Figure 10 shows the graph of this trendline and data over time.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+A table of the results of all of these three analyses can be found in
+table 4.
+
+\captionsetup[table]{labelformat=empty,skip=1pt}
+\begin{longtable}{lr}
+\caption*{
+{\large Time Series Analysis Results: \emph{\textbf{Ex-Situ Adaptation}}}
+} \\ 
+\toprule
+Measure & Result \\ 
+\midrule
+\multicolumn{1}{l}{Number of Properties} \\ 
+\midrule
+Tau & $-0.073$ \\ 
+P-value & $0.570$ \\ 
+\midrule
+\multicolumn{1}{l}{Total Amount Paid} \\ 
+\midrule
+Tau & $-0.073$ \\ 
+P-value & $0.570$ \\ 
+\midrule
+\multicolumn{1}{l}{Inflation Adjusted Total Amount Paid} \\ 
+\midrule
+Tau & $0.101$ \\ 
+P-value & $0.503$ \\ 
+ \bottomrule
+\end{longtable}
+
+These findings are consistent with the overall trends in all flooding
+adaptation grants over time, suggesting that there is not a
+statistically significant increase in ex-situ adaptation over time.
+Again, the trend in the total amount spent was likely due to trends in
+inflation rather than the actual amount spent as the trend was no longer
+present when accounting for inflation in the final time series analysis.
+
+\hypertarget{in-situ-analysis}{%
+\section{4.3 In-Situ Analysis}\label{in-situ-analysis}}
+
+The final time series analysis examined in-situ adaptation specifically,
+which is adaptation in place that allows an individual to adapt their
+property to the flooding through putting in a seawall, raising their
+home, etc. Again these time series examined possible monotonic trends in
+the number of properties and the total amount paid with and without
+inflation adjustments between 1985 and 2020. There was again only one
+statistically significant trend, however, for this analysis it was the
+trend in the number of properties over time.
+
+The number of properties that received in-situ adaptation funding was
+found to have a statistically significant monotonic increasing trend (p
+= 0.0004, tau = 0.44). This trend can be seen in figure 11.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+THe other two analyses, total amount paid and inflation adjusted total
+amount paid, were not statistically significant with p-values of 0.207
+and 0.484 respectively. The graphs showing this data over time with the
+associated trend line can be seen in figures 12 and 13. Both graphs show
+a drastic spike in payments in 2008 - this is likely due to Hurricane
+Katrina where significant funding was needed to help communities in
+Louisiana recover and adapt to these types of storms.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+A table of each of these time series results can be found in table 5.
+
+\captionsetup[table]{labelformat=empty,skip=1pt}
+\begin{longtable}{lr}
+\caption*{
+{\large Time Series Analysis Results: \emph{\textbf{In-Situ Adaptation}}}
+} \\ 
+\toprule
+Measure & Result \\ 
+\midrule
+\multicolumn{1}{l}{Number of Properties} \\ 
+\midrule
+Tau & $0.440$ \\ 
+P-value & $0.000$ \\ 
+\midrule
+\multicolumn{1}{l}{Total Amount Paid} \\ 
+\midrule
+Tau & $0.167$ \\ 
+P-value & $0.207$ \\ 
+\midrule
+\multicolumn{1}{l}{Inflation Adjusted Total Amount Paid} \\ 
+\midrule
+Tau & $0.123$ \\ 
+P-value & $0.484$ \\ 
+ \bottomrule
+\end{longtable}
+
+Overall, these findings suggest that more properties are receiving
+in-situ adaptation funding, yet the total amount paid for in-situ
+adaptation is not changing significantly. The increase in number of
+properties is what one would expect given the increasing number of
+people that are exposed to flooding over time. The lack of a paralleling
+trend in total amount paid requires deeper analysis. It could be because
+the measures are becoming more affordable as they are becoming more
+common and necessary, or because more individuals are seeking more minor
+in-situ adaptation projects. Deeper analysis on the exact type of
+adaptation action would be necessary to understand why these trends
+exist. Still, this analysis provides important insight that indicates
+that there is a statistically significant increase in the number of
+properties that are adapting in place to flooding impacts.
+
+\hypertarget{spatial-analysis}{%
+\section{4.4 Spatial Analysis}\label{spatial-analysis}}
+
+The final part of this analysis sought to spatially visualize this data
+as to explore possible spatial trends in the data to complement that
+analysis of temporal trends. This spatial analysis specifically looked
+at the data for North Carolina due to data availability and size. These
+maps show the number of properties all adaptation, in-situ, and ex-situ
+at the county level. The spatial analysis specifically showed the number
+of properties rather than also or instead including the total amount
+paid because the resulting maps were the same for both as the spatial
+trends were consistent. Number of properties did not require inflation
+adjustments and thus was selected over total amount paid for the
+analysis.
+
+First, Map 1 helps to visualize where in North Carolina these adaptation
+grants are concentrated by mapping the number of properties that
+received flooding adaptation grants by county.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+Maps 2 and 3 help to compare the areas that have a high number of
+properties that received flooding adaptation grants for ex-situ
+vs.~in-situ grants.
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+In comparing these two maps it is very clear that the ex-situ adaptation
+funding is concentrated in the inland county whereas the in-situ
+adaptation funding is concentrated on the coast. This is an important
+finding, suggesting that buyouts occur more often inland likely from
+riverine flooding whereas in-situ adaptation may be more common for
+coastal flooding.
 
 \newpage
 
 \hypertarget{summary-and-conclusions}{%
-\section{Summary and Conclusions}\label{summary-and-conclusions}}
+\subsection{5. Summary and Conclusions}\label{summary-and-conclusions}}
+
+\hypertarget{lack-of-overall-trends-in-flooding-adaptation}{%
+\section{5.1 Lack of Overall Trends in Flooding
+Adaptation}\label{lack-of-overall-trends-in-flooding-adaptation}}
+
+For almost all of the time series analyses, we found no statistically
+significant trend. This was true for trends in all adaptation types for
+number of properties and total amount paid (after inflation
+adjustments), as well as for buyouts for number of properties and total
+amount paid (after inflation adjustments). There was also no
+statistically significant trend in the total amount paid for in-situ
+adaptation. This is inconsistent with the initial hypothesis that all of
+these would be increasing due to the increase in flooding hazards across
+the United States. However, a lack of a trend is still an important
+finding in that it suggests that further analysis is needed to
+understand why these resources are not being used. This could indicate
+that despite potential increases in flooding, communities are not
+experiencing this to the level that an adaptation measure would be
+necessary. Alternatively, this could indicate that communities may just
+not be aware of the resources that are available to them in the face of
+flooding hazards. The lack of trends in buyouts may be a result of a
+number of factors given the complicated nature of buyouts socially and
+economically. Communities may be less apt to seek out a buyout because
+of the challenges of moving, going through the bureaucratic process,
+forming a new community, finding a new home, tc. and it may not be a
+reflection of their exposure to hazard.
+
+\hypertarget{trends-in-in-situ-flooding-adaptation-spatial-and-temporal}{%
+\section{5.2 Trends in In-Situ Flooding Adaptation: Spatial and
+Temporal}\label{trends-in-in-situ-flooding-adaptation-spatial-and-temporal}}
+
+The only statistically significant trends, after adjusting the total
+amount paid values for inflation, was the number of properties receiving
+in-situ adaptation funding. In this case, again, the driver of this
+trend is unknown. However, in considering this, the spatial analysis can
+complement the interpretation of these findings. The spatial analysis
+showed that the number of properties in North Carolina receiving in-situ
+adaptation grants was heavily concentrated near the coast, while the
+ex-situ adaptation properties were much more present inland from the
+coast.
+
+While there are many drivers of flooding and changes in flooding,
+climate change has made the sea levels rise increasing coastal flooding
+dramatically. If ex-situ adaptation primarily serves riverine flooding,
+these grants would not be impacted by sea level rise trends. Similarly,
+if in-situ funding primarily serves coastal communities one would expect
+an increasing trend in in-situ grants associated with the increase in
+sea level. This is reflected in our findings for both in-situ and
+ex-situ trends in the number of properties over time, with the spatial
+analyis providing insight on how to consider these findings. It is
+possible that the increase in in-situ adaptation is associated with the
+increase in sea level whereas the ex-situ adaptation funding is more
+responsive to changes in inland flooding. However, this is just a
+hypothesis based on the findings from this analysis. A nationwide
+analysis of the spatial trends in in-situ vs.~ex-situ adaptation is
+necessary to determine if this is consistent across the United States
+and then a deeper analysis is necessary to identify drivers of these
+trends such as sea level rise.
+
+\hypertarget{opportunities-for-future-research}{%
+\section{Opportunities for Future
+Research}\label{opportunities-for-future-research}}
+
+The findings from this analysis provided foundations for future research
+on trends in adaptation funding in the United States. Extending the
+spatial analysis to include the entirety of the United States would
+allow an exploration of the trends in ex-situ and in-situ grants beyond
+those in North Carolina to identify if these are representative of the
+rest of the United States. Furthermore, deeper analysis that compare
+these trends with those of sea level rise, as well as socio-economic
+factors such as the cost of adaptation, would allow researchers to begin
+to identify potential drivers of these trends.
 
 \newpage
 
 \hypertarget{references}{%
 \section{References}\label{references}}
 
-\textless add references here if relevant, otherwise delete this
-section\textgreater{}
+State of North Carolina. 2020. ``North Carolina State and County
+Boundary Polygons.'' \emph{ArcGIS Hub.}
+\url{https://hub.arcgis.com/datasets/NCEM-GIS}::north-carolina-state-and-county-boundary-polygons/about
+
+Environmental Protection Agency. 2020. ``Climate Change Indicators:
+Coastal Flooding.'' \emph{Climate Change Indicators.}
+\url{https://www.epa.gov/climate-indicators/climate-change-indicators-coastal-flooding\#}:\textasciitilde:text=Data\%20\%7C\%20Technical\%20Documentation-,Key\%20Points,Coasts\%20(see\%20Figure\%202).
+
+Internal Displacement Monitoring Centre (IDMC). 2019. ``United States of
+America: Figure Analysis, Displacement Related to Disasters.''
+\emph{IDMC.}
+\url{https://www.internal-displacement.org/sites/default/files/inline-files/GRID-2019-Disasters-Figure-Analysis-UnitedStates.pdf}
+
+Lindsey, R. 2022. ``Climate Change: Global Sea Level.''
+\emph{Climate.gov.}
+\url{https://www.climate.gov/news-features/understanding-climate/climate-change-global-sea-level}
+
+Federal Emergency Management Agency (FEMA). 2022. ``OpeFEMA Dataset:
+Hazard Mitigation Assistance Mitigated Properties - v2.'' \emph{Reports
+\& Data.}
+\url{https://www.fema.gov/openfema-data-page/hazard-mitigation-assistance-mitigated-properties-v2}
+
+Wing O., Lehman, W., Bates, P., Sampson, C., Quinn, N., Smith, A., Neal,
+J., Porter, J., \& Kousky, C. 2022. ``Inequitable patterns of US flood
+risk in the Anthropocene.'' \emph{Nature} 12:
+\url{https://www.nature.com/articles/s41558-021-01265-6}
 
 \end{document}
