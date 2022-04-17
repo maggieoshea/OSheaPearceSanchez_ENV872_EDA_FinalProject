@@ -601,7 +601,9 @@ Overall, these findings suggest that more properties are receiving in-situ adapt
 
 # Spatial Analysis 
 
-The final part of this analysis sought to spatially visualize this data as to explore possible spatial trends in the data alongside the 
+The final part of this analysis sought to spatially visualize this data as to explore possible spatial trends in the data to complement that analysis of temporal trends. This spatial analysis specifically looked at the data for North Carolina due to data availability and size. These maps show the number of properties all adaptation, in-situ, and ex-situ at the county level. The spatial analysis specifically showed the number of properties rather than also or instead including the total amount paid because the resulting maps were the same for both as the spatial trends were consistent. Number of properties did not require inflation adjustments and thus was selected over total amount paid for the analysis. 
+
+First, Map 1 helps to visualize where in North Carolina these adaptation grants are concentrated by mapping the number of properties that received flooding adaptation grants by county.
 
 ```{r include = FALSE, echo = FALSE, message = FALSE, warning = FALSE}
 flood_counties_join <- left_join(NC_countyboundaries, NC_flooddata, by = "County")
@@ -624,18 +626,7 @@ ggplot(data=flood_counties_join) +
         legend.text = element_text(size = 10))
 ```
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-ggplot(data=flood_counties_join) +
-  geom_sf(aes(fill=All_propertiesamountpaid)) + 
-  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Total Amount Paid (USD)")+
-  labs(
-    title='Total Amount Paid for Flooding Adaptation: 1985-2020',
-    fill ='Amount Paid (USD)'
-  )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
-```
-
+Maps 2 and 3 help to compare the areas that have a high number of properties that received flooding adaptation grants for ex-situ vs. in-situ grants. 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE}
 ggplot(data=flood_counties_join) +
@@ -661,31 +652,8 @@ ggplot(data=flood_counties_join) +
         legend.text = element_text(size = 10))
 ```
 
+In comparing these two maps it is very clear that the ex-situ adaptation funding is concentrated in the inland county whereas the in-situ adaptation funding is concentrated on the coast. This is an important finding, suggesting that buyouts occur more often inland likely from riverine flooding whereas in-situ adaptation may be more common for coastal flooding. This would pair well with the findings from the time-series analysis which found an increase in the number of properties receiving in-situ funding but no trend in the number of properties receiving ex-situ grants. Climate change has made the sea levels rise increasing coastal flooding dramatically, a trend that will only increase. If ex-situ adaptation primarily serves riverine flooding, these grants would not be impacted by sea level rise trends, and if in-situ funding primarily serves coastal communities there would be an associated increasing trend in in-situ grants. 
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-ggplot(data=flood_counties_join) +
-  geom_sf(aes(fill=Buyouts_propertiesamountpaid)) + 
-  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Total Amount Paid (USD)")+
-  labs(
-    title='Total Amount Paid for Ex-Situ Adaptation: 1985-2020',
-    fill ='Amount Paid (USD)'
-  )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
-```
-
-```{r echo = FALSE, message = FALSE, warning = FALSE}
-ggplot(data=flood_counties_join) +
-  geom_sf(aes(fill=insituproperties_amountpaid)) + 
-  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Total Amount Paid")+
-  labs(
-    title='Total Amount Paid for In-Situ Adaptation: 1985-2020',
-    fill ='Amount Paid (USD)'
-  )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
-
-```
 
 \newpage
 
