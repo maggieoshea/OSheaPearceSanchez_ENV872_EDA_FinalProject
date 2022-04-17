@@ -610,7 +610,7 @@ insitu.tsresults <- rbind(ts_propINSITU_wrangle , ts_paidINSITU_wrangle, ts_infl
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 4: Results from Time Series Analysis on Trends in In-Situ Adaptation"}
 gt.insituresults <- insitu.tsresults  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -666,7 +666,7 @@ flood_counties_join [is.na(flood_counties_join)] <- 0
 class(flood_counties_join)
 ```
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Map 1: Spatial Distribution of the Number of Properties that Received Flooding Adaptation Grant Funding between 1985 - 2020"}
 ggplot(data=flood_counties_join) +
   geom_sf(aes(fill=All_properties)) + 
   scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Number of Properties")+
@@ -680,7 +680,7 @@ ggplot(data=flood_counties_join) +
 
 Maps 2 and 3 help to compare the areas that have a high number of properties that received flooding adaptation grants for ex-situ vs. in-situ grants. 
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Map 2: Spatial Distribution of the Number of Properties that Received In-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
 ggplot(data=flood_counties_join) +
   geom_sf(aes(fill=insitupropertiesperyear)) + 
   scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Number of Properties")+
@@ -692,7 +692,7 @@ ggplot(data=flood_counties_join) +
         legend.text = element_text(size = 10))
 ```
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Map 3: Spatial Distribution of the Number of Properties that Received Ex-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
 ggplot(data=flood_counties_join) +
   geom_sf(aes(fill=Buyouts_propertiesperyear)) + 
   scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse', name = "Number of Properties")+
