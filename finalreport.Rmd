@@ -84,6 +84,7 @@ ts_insitupaidinflation <- read.csv("./Data/tsresults_insituamountpaidinflation.c
 
 ```
 
+\newpage
 
 ## 1. Rationale and Research Questions
 
@@ -111,7 +112,55 @@ For the spatial analysis, the county boundaries for North Carolina were download
 
 The mitigated properties dataset required three different types of wrangling for the analysis. First, we wrangled the data to result in a dataset with the total number of properties that received a grant for any type of flooding adaptation and the total amount paid for these per year. Second, we wrangled the data to have this same information, number of properties and total amount paid, for ex-situ adaptation, or buyouts, per year and did the same for in-situ adaptation. Finally, we wrangled the mitigated properties dataset in the same ways - finding number of properties and total amount paid for all flooding grants, ex-situ grants, and in-situ grants but instead of summarizing per year, we selected for only North Carolina grants and grouped the data by county for our spatial analysis. 
 
-**MAKE A TABLE for type codes**
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+insitutypecodes.list <- list(Code = c(202.1,202.2,202.3,202.4,203.1,203.2,203.3,203.4,204.1,204.2,204.3,204.4,204.5,204.6,207.2), Activity = c("Elevation of Private Structures—Riverine", "Elevation of Private Structures—Coastal", "Elevation of Public Structures—Riverine", "Elevation of Public Structures—Coastal", "Wet Floodproofing Private Structures—Riverine", "Wet Floodproofing Private Structures—Coastal", "Wet Floodproofing Public Structures—Riverine", "Wet Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Commercial)", "Dry Floodproofing Private Structures—Coastal (Commercial)","Dry Floodproofing Public Structures—Riverine", "Dry Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Residential-Historic)", "Dry Floodproofing Private Structures—Coastal (Residential-Historic)", "Mitigation Reconstruction"))
+
+insitu_type.df <- as.data.frame(do.call(cbind, insitutypecodes.list ))
+
+exsitutypecodes.list <- list(Code = c(200.1,200.2,200.3,200.4,200.5,201.1,201.2,201.3,201.4), Activity = c("Acquisition of Private Real Property (Structures and Land)—Riverine", "Acquisition of Private Real Property (Structures and Land)—Coastal", "Acquisition of Public Real Property (Structures and Land)—Riverine", "Acquisition of Public Real Property (Structures and Land)—Coastal", "Acquisition of Vacant Land", "Relocation of Private Structures—Riverine", "Relocation of Private Structures—Coastal", "Relocation of Public Structures—Riverine",
+"Relocation of Public Structures—Coastal"))
+
+exsitu_type.df <- as.data.frame(do.call(cbind, exsitutypecodes.list))
+
+typecodes <- rbind(insitu_type.df, exsitu_type.df)
+```
+
+
+```{r}
+gtobject <- gt(data = typecodes)
+gt.typecodes <- gtobject %>%
+
+  tab_header(
+    title="Mitigated Properties Flooding Type Codes",
+  ) %>% 
+  
+  tab_options(
+    row_group.font.weight = "bold",
+    row_group.border.bottom.width = 1, 
+    table_body.vlines.style = "dashed", 
+    table_body.vlines.width = 0.5, 
+    table_body.vlines.color = "grey"
+  )%>%
+
+  tab_source_note(
+    source_note = "Source: Open FEMA Dataset"
+  )%>%
+  
+    tab_row_group(
+    label = "Ex-Situ Adaptation",
+    rows = c(16:24)
+  )%>%
+  
+    tab_row_group(
+    label = "In-Situ Adaptation",
+    rows = c(1:15)
+  )
+
+  
+gt.typecodes
+
+```
 
 In order to do so, we first examined and explored the dataset and found that some entries had a total amount paid that was negative. Because the OpenFEMA information page included a note that these were manually entered data and subject to human error, we made the assumption that this was due to human error and removed these negative values from our analysis. After doing so, we used this cleaned mitigated properties dataset to create our three different types of wrangled datasets. This involved, first, examining the “type” codes to identify which type codes indicate that the grants were used for flooding. Table 1 shows the type codes that were used, grouped by ex-situ and in-situ codes. These type codes together were used to find all flooding grants regardless of adaptation type. 
 
@@ -516,7 +565,7 @@ ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
   y = "Number of Properties")
 ```
 
-THe other two analyses, total amount paid and inflation adjusted total amount paid, were not statistically significant with p-values of 0.207 and 0.484 respectively. The graphs showing this data over time with the associated trend line can be seen in figures 12 and 13. Both graphs show a drastic spike in payments in 2008 - this is likely due to Hurricane Katrina where significant funding was needed to help communities in Louisiana recover and adapt to these types of storms. 
+The other two analyses, total amount paid and inflation adjusted total amount paid, were not statistically significant with p-values of 0.207 and 0.484 respectively. The graphs showing this data over time with the associated trend line can be seen in figures 12 and 13. Both graphs show a drastic spike in payments in 2008 - this is likely due to Hurricane Katrina where significant funding was needed to help communities in Louisiana recover and adapt to these types of storms. 
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 

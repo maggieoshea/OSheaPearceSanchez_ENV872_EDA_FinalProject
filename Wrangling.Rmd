@@ -66,7 +66,7 @@ hazard_properties <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigat
 I wrangled the data in two ways. First, like we talked about, I summarized amount paid over time, then looked at the amount paid for in-situ vs. ex-situ adaptation. However, all the observations before 1999 are NAs for amount paid and there are a few negative numbers (which I removed). Because of all this, I also summarized by number of properties in case we wanted to also look at that because we had data further back in time. 
 
 
-<<<<<<< HEAD
+
 #Actual Amount Paid by Year
 ```{r amount paid per year}
 #All flood properties
@@ -85,13 +85,13 @@ clean_hazardprops <- hazard_properties %>%
   filter(actualAmountPaid > 0)
 
 floodproperties_amountpaid <- clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(programFy)%>%
   summarise(Floodproperties_amountpaid = sum(actualAmountPaid))
 
 #Ex situ
 buyoutfloodproperties_amountpaid <- clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(programFy)%>%
   summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
 
@@ -173,14 +173,14 @@ ggplot(inflation_insituprops_amountpaid, aes(y= InflationAdjusted_INSITUAmountpa
 ```{r Flood paid by state}
 
 paidperstate_flood <- clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(state)%>%
   summarise(Floodproperties_amountpaid = sum(actualAmountPaid))%>%
   rename("STATE_NAME" = state)
 
 #Ex situ
 exsitu_paidperstate <- clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(state)%>%
   summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))%>%
   rename("STATE_NAME" = state)
@@ -210,24 +210,17 @@ ggplot(no2008_insitufloodproperties, aes(y= insituproperties_amountpaid, x = pro
 ```{r Number of Properties by year}
 #All flood properties
 floodproperties <- hazard_properties %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(programFy)%>%
   summarise(Floodpropertiesperyear = sum(numberOfProperties))
 
 
-Flood_properties_ts <- ts(floodproperties$Floodpropertiesperyear,
-                   start=c(1989,1), frequency = 12) 
-plot(Flood_properties_ts)
-
 #Ex situ
 buyoutfloodproperties <- hazard_properties %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(programFy)%>%
   summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
 
-buyouts_ts <- ts(buyoutfloodproperties$Buyouts_propertiesperyear,
-                   start=c(1989,1), frequency = 12) 
-plot(buyouts_ts)
 
 
 #In situ
@@ -266,28 +259,28 @@ ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) +
 
 ```{r number of properties by state}
 #All flood properties
-floodproperties_bystateperyear <- hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+floodproperties_bystateperyear <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(state, programFy)%>%
   summarise(Floodpropertiesperyear = sum(numberOfProperties))%>%
   rename("STATE_NAME" = state)
 
-floodproperties_bystate <- hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+floodproperties_bystate <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(state)%>%
   summarise(Floodpropertiesperyear = sum(numberOfProperties))%>%
   rename("STATE_NAME" = state)
 
 
 #Ex situ
-exsitu_propsperstate <- hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+exsitu_propsperstate <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(state)%>%
   summarise(Buyouts_propertiesperyear = sum(numberOfProperties))%>%
   rename("STATE_NAME" = state)
 
 #In situ
-insitu_propsperstate <- hazardprops %>%
+insitu_propsperstate <- clean_hazardprops %>%
   filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
   group_by(state)%>%
   summarise(insitupropertiesperyear = sum(numberOfProperties))%>%

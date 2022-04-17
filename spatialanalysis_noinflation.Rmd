@@ -46,7 +46,7 @@ NC.floodproperties_amountpaid <- NC_clean_hazardprops %>%
 
 #Ex situ
 NC.buyoutfloodproperties_amountpaid <- NC_clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(county, state)%>%
   summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
 
@@ -73,7 +73,7 @@ NC.floodproperties_number <- NC_clean_hazardprops %>%
 
 #Ex situ
 NC.buyoutfloodproperties <- NC_clean_hazardprops %>%
-  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10', type))%>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
   group_by(county, state)%>%
   summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
 
