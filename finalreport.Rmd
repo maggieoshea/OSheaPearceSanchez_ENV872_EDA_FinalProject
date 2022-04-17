@@ -44,16 +44,13 @@ library(viridis)
 
 
 # Set your ggplot theme
+
 finalprojecttheme <- theme_light(base_size = 14) +
-  theme(axis.text = element_text(color = "black"), 
-            legend.position = "right",  
-            plot.title = element_text(size=14, hjust=0.5), 
-            plot.subtitle = element_text(size=10, hjust=0.5))
-finalprojecttheme_longtitle <- theme_light(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
             legend.position = "right",  
             plot.title = element_text(size=11), 
             plot.subtitle = element_text(size=10))
+theme_set(finalprojecttheme)
 
 # Load your datasets
 
@@ -113,8 +110,8 @@ For the spatial analysis, the county boundaries for North Carolina were download
 The mitigated properties dataset required three different types of wrangling for the analysis. First, we wrangled the data to result in a dataset with the total number of properties that received a grant for any type of flooding adaptation and the total amount paid for these per year. Second, we wrangled the data to have this same information, number of properties and total amount paid, for ex-situ adaptation, or buyouts, per year and did the same for in-situ adaptation. Finally, we wrangled the mitigated properties dataset in the same ways - finding number of properties and total amount paid for all flooding grants, ex-situ grants, and in-situ grants but instead of summarizing per year, we selected for only North Carolina grants and grouped the data by county for our spatial analysis. 
 
 
-```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-insitutypecodes.list <- list(Code = c(202.1,202.2,202.3,202.4,203.1,203.2,203.3,203.4,204.1,204.2,204.3,204.4,204.5,204.6,207.2), Activity = c("Elevation of Private Structures—Riverine", "Elevation of Private Structures—Coastal", "Elevation of Public Structures—Riverine", "Elevation of Public Structures—Coastal", "Wet Floodproofing Private Structures—Riverine", "Wet Floodproofing Private Structures—Coastal", "Wet Floodproofing Public Structures—Riverine", "Wet Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Commercial)", "Dry Floodproofing Private Structures—Coastal (Commercial)","Dry Floodproofing Public Structures—Riverine", "Dry Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Residential-Historic)", "Dry Floodproofing Private Structures—Coastal (Residential-Historic)", "Mitigation Reconstruction"))m
+```{r typecodes, include=FALSE, message=FALSE, warning=FALSE}
+insitutypecodes.list <- list(Code = c(202.1,202.2,202.3,202.4,203.1,203.2,203.3,203.4,204.1,204.2,204.3,204.4,204.5,204.6,207.2), Activity = c("Elevation of Private Structures—Riverine", "Elevation of Private Structures—Coastal", "Elevation of Public Structures—Riverine", "Elevation of Public Structures—Coastal", "Wet Floodproofing Private Structures—Riverine", "Wet Floodproofing Private Structures—Coastal", "Wet Floodproofing Public Structures—Riverine", "Wet Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Commercial)", "Dry Floodproofing Private Structures—Coastal (Commercial)","Dry Floodproofing Public Structures—Riverine", "Dry Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Residential-Historic)", "Dry Floodproofing Private Structures—Coastal (Residential-Historic)", "Mitigation Reconstruction"))
 
 insitu_type.df <- as.data.frame(do.call(cbind, insitutypecodes.list ))
 
@@ -250,7 +247,7 @@ gt.summstats <- Allsummarystatistics %>%
     )%>%
   
   tab_header(
-    title="Administration of Hazard Mitigation Grants",
+    title=md("**Administration of Hazard Mitigation Grants**"),
   ) %>% 
   
   tab_options(
@@ -266,17 +263,17 @@ gt.summstats <- Allsummarystatistics %>%
   )%>%
   
     tab_row_group(
-    label = "Ex-Situ Adaptation",
+    label = md("***Ex-Situ Adaptation***"),
     rows = c(5:6)
   )%>%
   
     tab_row_group(
-    label = "In-Situ Adaptation",
+    label = md("***In-Situ Adaptation***"),
     rows = c(3:4)
   )%>%
   
   tab_row_group(
-    label = "All Adaptation",
+    label = md("***All Adaptation***"),
     rows = c(1:2)
   )
 
@@ -294,7 +291,7 @@ After wrangling the data, we explored the data both over time as well as totals 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap= "Figure 1: Total Properties that Received Flood Adaptation Funding from 1985 to 2020"}
 ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
-  geom_bar(stat = "identity", fill = "lightblue4")+
+  geom_bar(stat = "identity", fill = "cornflowerblue")+
   labs( 
     title = "Total Properties that Received Flooding Adaptation Funding from 1985 - 2020", 
     x = "Adaptation Type", 
@@ -305,7 +302,7 @@ To examine this relationship further, we compared the total amount paid for all 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 2: Total Amount Paid for Flooding Adaptation from 1985 - 2020"}
 ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
-  geom_bar(stat = "identity", fill = "lightblue3")+
+  geom_bar(stat = "identity", fill = "steelblue3")+
   labs( 
     title = "Total Amount Paid for Flooding Adaptation from 1985 - 2020", 
     subtitle = "Amount Paid With and Without Inflation Adjustments to 2020 USD",
@@ -317,7 +314,7 @@ Finally, figures 3 and 4 show this same data over time. Figure 3 shows the numbe
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 3: Number of Properties that Received Flood Adaptation Grants from 1985 - 2020"}
 ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
-  geom_bar(stat = "identity", fill = "lightblue4")+
+  geom_bar(stat = "identity", fill = "cornflowerblue")+
   labs( 
     title = "Number of Properties that Received Flood Adaptation Grants from 1985 - 2020", 
     x = "Year", 
@@ -328,7 +325,7 @@ Figure 4 shows the total amount paid by FEMA through flood adaptation grants per
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Figure 4: Total Amount Paid for Flood Adaptation Grants from 1985 to 2020 in 2020 inflation adjusted U.S. dollars"}
 ggplot(data = inflation_data, aes(x = programFy, y = InflationAdjusted_AllAmountpaid)) +
-  geom_bar(stat = "identity", fill = "lightblue3")+
+  geom_bar(stat = "identity", fill = "steelblue3")+
   labs( 
     title = "Total Amount Paid for Flood Adaptation Grants 1985 - 2020", 
     x = "Year", 
@@ -343,18 +340,18 @@ These graphs, as well as the graphs of ex-situ and in-situ data over time, are f
 
 This analysis involved nine time series analysis which all sought to examine monotonic trends over time in the number of properties receiving grant funding for flooding adaptation and the total amount paid for flooding adaptation from these grants. These nine analysis can be understood based on the questions that each time series helps to answer: 
 
-***All Adaptation***
+***All Adaptation***  
 * Total Number of Properties: Is there a monotonic trend in the total number of properties that receive grant funding over time?
 * Total Amount Paid for All Adaptation: Is there a monotonic trend in the total amount paid for flooding adaptation grants over time?
 * Total Amount Paid - Inflation Adjusted: Is there (still) a monotonic trend in the total amount paid for flooding adaptation grants over time when adjusting for inflation to 2020 dollars?
 
-***Ex-Situ Adaptation***
+***Ex-Situ Adaptation***  
 * Number of Buyouts: Is there a monotonic trend in the total number of properties that received ex-situ grant funding, or funding to buyout the property, over time?
 * Amount Paid for Buyouts: Is there a monotonic trend in the amount paid for buyouts over time?
 * Amount Paid for Buyouts - Inflation Adjusted: Is there (still) a monotonic trend in the amount paid for buyouts after adjusting for inflation to 2020 dollars?  
 
 
-***In-Situ Adaptation***
+***In-Situ Adaptation***  
 * Number of In-Situ Properties: Is there a monotonic trend in the total number of properties that received in-situ grant funding to adapt in place over time?
 * Amount Paid for In-Situ Adaptation: Is there a monotonic trend in the amount paid for in-situ adaptation over time?
 * Amount Paid for In-Situ Adaptation - Inflation Adjusted: Is there (still) a monotonic trend in the amount paid for in-situ adaptation after adjusting for inflation to 2020 dollars?
@@ -368,7 +365,7 @@ Beginning with the analysis of all adaptation types, overall the only statistica
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap= "Figure 5: Number of Properties that Received Flood Adaptation Grants between 1985 and 2020"}
 ggplot(databyyear, aes(y= Floodpropertiesperyear, x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
+  geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "cornflowerblue", show.legend = FALSE)+
   labs(title = "Number of Properties that Received Flood Adaptation Grants from 1985 - 2020", 
        x = "Fiscal Year", 
        y= "Number of Properties per Year")
@@ -419,7 +416,7 @@ gt.alladaptresults <- alladapt.results  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("Time Series Analysis Results: ***All Adaptation Types***"),
+    title=md("***Time Series Analysis Results: All Adaptation Types***"),
   ) %>% 
   
   cols_hide(columns = c(
@@ -434,17 +431,17 @@ gt.alladaptresults <- alladapt.results  %>%
   )%>%
 
     tab_row_group(
-    label = "Inflation Adjusted Total Amount Paid",
+    label = md("**Inflation Adjusted Total Amount Paid**"),
     rows = c(5:6)
   )%>%
   
     tab_row_group(
-    label = "Total Amount Paid",
+    label = "**Total Amount Paid**",
     rows = c(3:4)
   )%>%
   
   tab_row_group(
-    label = "Number of Properties",
+    label = "**Number of Properties**",
     rows = c(1:2)
   )
 
@@ -458,10 +455,10 @@ These findings suggest that there is no statistically significant monotonic tren
 
 The second analysis involved the three time series analyses identifying possible monotonic trends in ex-situ adaptation between 1985 and 2020. Again, the only statistically significant monotonic trend was the trend in total amount paid for buyouts before adjusting for inflation. There does appear to be a declining trend in the total number of properties that received ex-situ funding from FEMA as seen in Figure 8, however, the time series analysis reveals that this is not a statistically significant trend (p = 0.57). 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE fig.cap: "Figure 8:Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding between 1985 and 2020"}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap: "Figure 8: Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding between 1985 and 2020"}
 ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "cornflowerblue", show.legend = FALSE)+
   labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
   subtitle = "1985 - 2020", 
   y = "Number of Properties", 
@@ -516,7 +513,7 @@ gt.alladaptresults <- buyouts.tsresults  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("Time Series Analysis Results: ***Ex-Situ Adaptation***"),
+    title=md("***Time Series Analysis Results: Ex-Situ Adaptation***"),
   ) %>% 
   
   cols_hide(columns = c(
@@ -531,17 +528,17 @@ gt.alladaptresults <- buyouts.tsresults  %>%
   )%>%
 
     tab_row_group(
-    label = "Inflation Adjusted Total Amount Paid",
+    label = md("**Inflation Adjusted Total Amount Paid**"),
     rows = c(5:6)
   )%>%
   
     tab_row_group(
-    label = "Total Amount Paid",
+    label = md("**Total Amount Paid**"),
     rows = c(3:4)
   )%>%
   
   tab_row_group(
-    label = "Number of Properties",
+    label = md("**Number of Properties**"),
     rows = c(1:2)
   )
 
@@ -561,7 +558,7 @@ The number of properties that received in-situ adaptation funding was found to h
 ```{r echo = FALSE, message=FALSE, warning=FALSE, fig.cap: "Figure 11: Number of Properties that Received Grant Funding for In-Situ Adaptation to Flooding between 1985 and 2020."}
 ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
+  geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "cornflowerblue", show.legend = FALSE)+
   labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
   subtitle = "1985 - 2020", 
   x = "Year", 
@@ -616,7 +613,7 @@ gt.insituresults <- insitu.tsresults  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("Time Series Analysis Results: ***In-Situ Adaptation***"),
+    title=md("***Time Series Analysis Results: In-Situ Adaptation***"),
   ) %>% 
   
   cols_hide(columns = c(
@@ -631,17 +628,17 @@ gt.insituresults <- insitu.tsresults  %>%
   )%>%
 
     tab_row_group(
-    label = "Inflation Adjusted Total Amount Paid",
+    label = md("**Inflation Adjusted Total Amount Paid**"),
     rows = c(5:6)
   )%>%
   
     tab_row_group(
-    label = "Total Amount Paid",
+    label = md("**Total Amount Paid**"),
     rows = c(3:4)
   )%>%
   
   tab_row_group(
-    label = "Number of Properties",
+    label = md("**Number of Properties**"),
     rows = c(1:2)
   )
 

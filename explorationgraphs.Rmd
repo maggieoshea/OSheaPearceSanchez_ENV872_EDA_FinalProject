@@ -35,7 +35,7 @@ totals_inflation <- inflationadjusted%>%
             `All Adaptation` = sum(Floodproperties_amountpaid),
             `Ex-Situ - Inflation` = sum(InflationAdjusted_BUYOUTAmountpaid),
             `In-Situ - Inflation` = sum(InflationAdjusted_INSITUAmountpaid),
-            `All Adaptation - Inflation` = sum(InflationAdjusted_AllAmountpaid))
+            `All - Inflation` = sum(InflationAdjusted_AllAmountpaid))
   
 ```
 
@@ -61,7 +61,7 @@ ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
 ```
 
 ```{r}
-totals_inflation_pivot <- pivot_longer(totals_inflation, `Ex-Situ`:`All Adaptation - Inflation`, names_to = "Category", values_to = "Total")
+totals_inflation_pivot <- pivot_longer(totals_inflation, `Ex-Situ`:`All - Inflation`, names_to = "Category", values_to = "Total")
 
 write.csv(totals_inflation_pivot, './Data/totalamountpaidinflation_explorationgraph')
 
