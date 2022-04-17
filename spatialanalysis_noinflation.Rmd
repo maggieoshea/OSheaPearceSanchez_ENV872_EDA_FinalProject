@@ -117,12 +117,6 @@ mapview(flood_counties_join, zcol='All_properties')
 library(RColorBrewer)
 library(viridis)
 
-#paletteer::scale_fill_paletteer_d("wesanderson::FantasticFox1")
-  #scale_fill_continuous(type = 'viridis', direction = -1)
-    #  scale_fill_gradient2(
-    #low = "cadetblue1", 
-  # high = "deepskyblue2" )
-
 ggplot(data=flood_counties_join) +
   geom_sf(aes(fill=All_properties)) + 
   scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
