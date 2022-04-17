@@ -14,6 +14,10 @@ fontsize: 12pt
 mainfont: Times New Roman
 ---
 
+# Left to do: 
+* Figure out a way to get the table names into the table of contents
+* Figure out why the figures are knitting in the wrong place
+* Set theme so that the axis text aren't bigger than the title text 
 
 \newpage
 \tableofcontents 
