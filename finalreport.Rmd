@@ -85,7 +85,7 @@ ts_insitupaidinflation <- read.csv("./Data/tsresults_insituamountpaidinflation.c
 ```
 
 
-## Rationale and Research Questions
+## 1. Rationale and Research Questions
 
 Extreme weather events and natural disasters seem to be on the rise worldwide, and climate adaptation is vital to communities at risk. In the U.S., flooding is the most common natural disaster with the cost of flooding in the United States in 2020 estimated at $32.1 billion (IDMC 2019, Lindsey 2022, Wing et al. 2022). These costs, both financial as well as social, are expected to only rise as there is a predicted 24% increase in flooding by 2050 (Wing et al. 2022). Already, regions in the United States are seeing drastic increases in flooding since the 1950s - a study by the United States Environmental Protection Agency on 33 sites around the United States found flooding to be at least five times more common in over half the areas studies, with a strong concentration in sites along the eastern seaboard (EPA 2022). Given the rapid increase in flooding around the United States as well as the severe impacts this hazard can have, adaptation is becoming increasingly important and resources that already exist for these efforts are likely to become more strained.  
 
@@ -99,15 +99,15 @@ The temporal scale of the research was defined by the FEMA Mitigated Properties 
 
 \newpage
 
-## Dataset Information
+## 2. Dataset Information
 
-# Dataset Background and Retrieval: 
+# 2.1 Dataset Background and Retrieval: 
 
 We used data managed by the Federal Emergency Management Agency’s National Emergency Management Information Systems, downloaded directly in a CSV format through FEMA’s OpenFEMA resource. The dataset includes the record of properties that received grant assistance for hazard mitigation through any of the Hazard Mitigation Assistance grant programs, programs administered by FEMA that seek to reduce losses from disasters as well as protect life and property in the face of hazards (FEMA n.d.). This includes: the Hazard Mitigation Grant Program, the Flood Mitigation Assistance Grant Program, and the Pre-Disaster Mitigation Grant Program (ibid.). Entries prior to 2012 also include grants received through the Repetitive Flood Claims Grant program and Severe Repetitive Loss Grant Program which both were eliminated through the Biggert Water Flood Insurance Reform Act of 2012 (ibid.). Each entry includes data such as the total amount paid, the number of properties receiving support, the hazard that the grant is adapting against, the program year, and others. 
 
 For the spatial analysis, the county boundaries for North Carolina were downloaded from the OpenESRI platform which had the State of North Carolina’s Emergency Management Agency’s best current available data as of 2020. These boundaries were identified through sources including the North Carolina Geodetic Survey, the North Carolina Department of Transportation, the United States Geological Survey, as well as field surveys that have been recorded by the respective county (ArcGIS Hub 2020). 
 
-# Data Wrangling
+# 2.2 Data Wrangling
 
 The mitigated properties dataset required three different types of wrangling for the analysis. First, we wrangled the data to result in a dataset with the total number of properties that received a grant for any type of flooding adaptation and the total amount paid for these per year. Second, we wrangled the data to have this same information, number of properties and total amount paid, for ex-situ adaptation, or buyouts, per year and did the same for in-situ adaptation. Finally, we wrangled the mitigated properties dataset in the same ways - finding number of properties and total amount paid for all flooding grants, ex-situ grants, and in-situ grants but instead of summarizing per year, we selected for only North Carolina grants and grouped the data by county for our spatial analysis. 
 
@@ -239,7 +239,7 @@ gt.summstats
 
 \newpage
 
-## Exploratory Analysis 
+## 3. Exploratory Analysis 
 
 After wrangling the data, we explored the data both over time as well as totals for the number of properties and amount paid in our dataset, compared between all flooding and ex-situ vs. in-situ. Figure 1 shows the differences in the total number of properties between 1985 and 2020 that received adaptation flooding, comparing all of the properties with ex-situ and in-situ. The graph shows that more properties received ex-situ than in-situ grants by a considerable amount. 
 
@@ -286,7 +286,7 @@ ggplot(data = inflation_data, aes(x = programFy, y = InflationAdjusted_AllAmount
 
 \newpage
 
-## Analysis
+## 4. Analysis
 
 This analysis involved nine time series analysis which all sought to examine monotonic trends over time in the number of properties receiving grant funding for flooding adaptation and the total amount paid for flooding adaptation from these grants. These nine analysis can be understood based on the questions that each time series helps to answer: 
 
@@ -308,7 +308,7 @@ This analysis involved nine time series analysis which all sought to examine mon
 
 These data were also visualized through a spatial analysis of the number of properties and total amount paid for flood adaptation grants in North Carolina including for all grants, ex-situ grants, and in-situ grants. 
 
-# All Adaptation Types 
+# 4.1 All Adaptation Types 
 
 Beginning with the analysis of all adaptation types, overall the only statistically significant monotonic trend found was the trend in the total amount paid for flood adaptation in the United States, before adjusting for inflation. The total number of properties that received adaptation funding from 1985 to 2020 did not have a statistically significant monotonic trend (p > 0.9) which is evident in figure 5 which shows the number of properties over time as well as the associated trend line. 
 
@@ -402,7 +402,7 @@ gt.alladaptresults
 
 These findings suggest that there is no statistically significant monotonic trend in the number of properties that receive grants for flooding adaptation nor the amount spent on flooding adaptation by the Federal Emergency Management Agency. Though there was a trend in the total amount paid, this trend was no longer present when adjusting for inflation suggesting that the trend was likely a reflection of inflation rather than of an increase in amount spent. 
 
-# Ex-Situ Adaptation 
+# 4.2 Ex-Situ Adaptation 
 
 The second analysis involved the three time series analyses identifying possible monotonic trends in ex-situ adaptation between 1985 and 2020. Again, the only statistically significant monotonic trend was the trend in total amount paid for buyouts before adjusting for inflation. There does appear to be a declining trend in the total number of properties that received ex-situ funding from FEMA as seen in Figure 8, however, the time series analysis reveals that this is not a statistically significant trend (p = 0.57). 
 
@@ -500,7 +500,7 @@ gt.alladaptresults
 These findings are consistent with the overall trends in all flooding adaptation grants over time, suggesting that there is not a statistically significant increase in ex-situ adaptation over time. Again, the trend in the total amount spent was likely due to trends in inflation rather than the actual amount spent as the trend was no longer present when accounting for inflation in the final time series analysis.  
 
 
-# In-Situ Analysis 
+# 4.3 In-Situ Analysis 
 
 The final time series analysis examined in-situ adaptation specifically, which is adaptation in place that allows an individual to adapt their property to the flooding through putting in a seawall, raising their home, etc. Again these time series examined possible monotonic trends in the number of properties and the total amount paid with and without inflation adjustments between 1985 and 2020. There was again only one statistically significant trend, however, for this analysis it was the trend in the number of properties over time. 
 
@@ -599,7 +599,7 @@ gt.insituresults
 
 Overall, these findings suggest that more properties are receiving in-situ adaptation funding, yet the total amount paid for in-situ adaptation is not changing significantly. The increase in number of properties is what one would expect given the increasing number of people that are exposed to flooding over time. The lack of a paralleling trend in total amount paid requires deeper analysis. It could be because the measures are becoming more affordable as they are becoming more common and necessary, or because more individuals are seeking more minor in-situ adaptation projects. Deeper analysis on the exact type of adaptation action would be necessary to understand why these trends exist. Still, this analysis provides important insight that indicates that there is a statistically significant increase in the number of properties that are adapting in place to flooding impacts. 
 
-# Spatial Analysis 
+# 4.4 Spatial Analysis 
 
 The final part of this analysis sought to spatially visualize this data as to explore possible spatial trends in the data to complement that analysis of temporal trends. This spatial analysis specifically looked at the data for North Carolina due to data availability and size. These maps show the number of properties all adaptation, in-situ, and ex-situ at the county level. The spatial analysis specifically showed the number of properties rather than also or instead including the total amount paid because the resulting maps were the same for both as the spatial trends were consistent. Number of properties did not require inflation adjustments and thus was selected over total amount paid for the analysis. 
 
