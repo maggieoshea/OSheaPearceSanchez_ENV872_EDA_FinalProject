@@ -19,6 +19,11 @@ mainfont: Times New Roman
 \tableofcontents 
 \newpage
 \listoftables 
+1           Selected Flooding Adaptation Type Codes  
+2           FEMA Hazard Mitigated Properties Dataset: Summary Statistics  
+3           Results from Time Series Analysis of All Adaptation Types      
+4           Results from Time Series Analysis of Ex-Situ Adaptation     
+5           Results from Time Series Analysis of In-Situ Adaptation 
 \newpage
 \listoffigures 
 \newpage
@@ -86,7 +91,7 @@ ts_insitupaidinflation <- read.csv("./Data/tsresults_insituamountpaidinflation.c
 
 \newpage
 
-# 1. Rationale and Research Questions
+# Rationale and Research Questions
 
 Extreme weather events and natural disasters seem to be on the rise worldwide, and climate adaptation is vital to communities at risk. In the U.S., flooding is the most common natural disaster with the cost of flooding in the United States in 2020 estimated at $32.1 billion (IDMC 2019, Lindsey 2022, Wing et al. 2022). These costs, both financial as well as social, are expected to only rise as there is a predicted 24% increase in flooding by 2050 (Wing et al. 2022). Already, regions in the United States are seeing drastic increases in flooding since the 1950s - a study by the United States Environmental Protection Agency on 33 sites around the United States found flooding to be at least five times more common in over half the areas studies, with a strong concentration in sites along the eastern seaboard (EPA 2022). Given the rapid increase in flooding around the United States as well as the severe impacts this hazard can have, adaptation is becoming increasingly important and resources that already exist for these efforts are likely to become more strained.  
 
@@ -100,7 +105,7 @@ The temporal scale of the research was defined by the FEMA Mitigated Properties 
 
 \newpage
 
-# 2. Dataset Information
+# Dataset Information
 
 ## 2.1 Dataset Background and Retrieval: 
 
@@ -126,8 +131,8 @@ exsitu_type.df <- as.data.frame(do.call(cbind, exsitutypecodes.list))
 typecodes <- rbind(insitu_type.df, exsitu_type.df)
 ```
 
-
-```{r message = FALSE, warning = FALSE, echo = FALSE, fig.cap= "Table 1: Selected Flooding Adaptation Type Codes"}
+|                    *Table 1: Selected Flooding Adaptation Type Codes"*                
+```{r message = FALSE, warning = FALSE, echo = FALSE}
 gtobject <- gt(data = typecodes, caption  = "Table 1: Selected Flooding Adaptation Type Codes")
 gt.typecodes <- gtobject %>%
 
@@ -234,7 +239,8 @@ summary_exsitupaid2 <- summary.exsitu.amntpaid[, c(5, 1, 2, 3, 4)]
 Allsummarystatistics <- rbind(summary_allfloods2, summary_paidperyear2, summary_insituprops2, summary_insitupaid2, summary_exsituprops2, summary_exsitupaid2)
 ```
 
-```{r message=FALSE, warning=FALSE, echo=FALSE, fig.cap= "Table 2: Mitigated Properties Dataset Summary Statistics"}
+|                    *Table 2: FEMA Hazard Mitigated Properties Dataset: Summary Statistics*                  
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 
 gt.summstats <- Allsummarystatistics %>%
   rename("Category" = Name, "Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd) %>%   
@@ -279,7 +285,6 @@ gt.summstats <- Allsummarystatistics %>%
     label = md("***All Adaptation***"),
     rows = c(1:2)
   )
-
   
 gt.summstats
 
@@ -288,7 +293,7 @@ gt.summstats
 
 \newpage
 
-# 3. Exploratory Analysis 
+# Exploratory Analysis 
 
 After wrangling the data, we explored the data both over time as well as totals for the number of properties and amount paid in our dataset, compared between all flooding and ex-situ vs. in-situ. Figure 1 shows the differences in the total number of properties between 1985 and 2020 that received adaptation flooding, comparing all of the properties with ex-situ and in-situ. The graph shows that more properties received ex-situ than in-situ grants by a considerable amount. 
 
@@ -339,7 +344,7 @@ These graphs, as well as the graphs of ex-situ and in-situ data over time, are f
 
 \newpage
 
-# 4. Analysis
+# Analysis
 
 This analysis involved nine time series analysis which all sought to examine monotonic trends over time in the number of properties receiving grant funding for flooding adaptation and the total amount paid for flooding adaptation from these grants. These nine analysis can be understood based on the questions that each time series helps to answer: 
 
@@ -361,6 +366,7 @@ This analysis involved nine time series analysis which all sought to examine mon
 
 
 ***In-Situ Adaptation***  
+
 * Number of In-Situ Properties: Is there a monotonic trend in the total number of properties that received in-situ grant funding to adapt in place over time?
 
 * Amount Paid for In-Situ Adaptation: Is there a monotonic trend in the amount paid for in-situ adaptation over time?
@@ -421,7 +427,8 @@ alladapt.results <- rbind(ts_propall_wrangle, ts_inflationpaidall_wrangle, ts_in
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 2: Results from Time Series Analysis of All Adaptation Types"}
+|                    *Table 3: Results from Time Series Analysis of All Adaptation Types*                    
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.alladaptresults <- alladapt.results  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -518,7 +525,8 @@ buyouts.tsresults <- rbind(ts_propbuyout_wrangle , ts_paidbuyout_wrangle, ts_inf
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 3: Results from Time Series Analysis of Ex-Situ Adaptation"}
+|                    *Table 4: Results from Time Series Analysis of Ex-Situ Adaptation*              
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.alladaptresults <- buyouts.tsresults  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -593,7 +601,7 @@ ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
 ggplot(inflation_data, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "steelblue4", show.legend = FALSE)+
-  labs(title = "Total Amount Paid for In Situ Adaptation in the United States (*Inflation Adjusted*)",
+  labs(title = "Inflation Adjusted Total Amount Paid for In Situ Adaptation in the United States",
   subtitle = "1985 - 2020", 
        x = "Year", 
        y= "2020 US Dollars")
@@ -618,7 +626,10 @@ insitu.tsresults <- rbind(ts_propINSITU_wrangle , ts_paidINSITU_wrangle, ts_infl
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 4: Results from Time Series Analysis on Trends in In-Situ Adaptation"}
+
+
+|                    *Table 5: Results from Time Series Analysis of In-Situ Adaptation*            
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.insituresults <- insitu.tsresults  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -657,6 +668,7 @@ gt.insituresults <- insitu.tsresults  %>%
 gt.insituresults
 ```
 
+
 Overall, these findings suggest that more properties are receiving in-situ adaptation funding, yet the total amount paid for in-situ adaptation is not changing significantly. The increase in number of properties is what one would expect given the increasing number of people that are exposed to flooding over time. The lack of a paralleling trend in total amount paid requires deeper analysis. It could be because the measures are becoming more affordable as they are becoming more common and necessary, or because more individuals are seeking more minor in-situ adaptation projects. Deeper analysis on the exact type of adaptation action would be necessary to understand why these trends exist. Still, this analysis provides important insight that indicates that there is a statistically significant increase in the number of properties that are adapting in place to flooding impacts. 
 
 ## 4.4 Spatial Analysis 
@@ -682,8 +694,9 @@ ggplot(data=flood_counties_join) +
     title='Number of Properties that Received Flooding Adaptation Funding: 1985-2020',
     fill ='Number of Properties'
   )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
+  theme(plot.title = element_text(size=10), 
+        legend.text = element_text(size = 9), 
+        legend.title = element_text(size = 9))
 ```
 
 Figure 15 and 16 help to compare the areas that have a high number of properties that received flooding adaptation grants for ex-situ vs. in-situ grants. 
@@ -696,8 +709,9 @@ ggplot(data=flood_counties_join) +
     title='Number of Properties that Received In Situ Adaptation Funding: 1985-2020',
     fill ='Number of Properties'
   )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
+  theme(plot.title = element_text(size=10), 
+        legend.text = element_text(size = 9), 
+        legend.title = element_text(size = 9))
 ```
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Spatial Distribution of the Number of Properties that Received Ex-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
@@ -708,8 +722,9 @@ ggplot(data=flood_counties_join) +
     title='Number of Properties that Received Ex Situ Adaptation Funding: 1985-2020',
     fill ='Number of Properties'
   )+
-  theme(plot.title = element_text(size=12, hjust=0.5), 
-        legend.text = element_text(size = 10))
+  theme(plot.title = element_text(size=10), 
+        legend.text = element_text(size = 9), 
+        legend.title = element_text(size = 9))
 ```
 
 In comparing these two maps it is very clear that the ex-situ adaptation funding is concentrated in the inland county whereas the in-situ adaptation funding is concentrated on the coast. This is an important finding, suggesting that buyouts occur more often inland likely from riverine flooding whereas in-situ adaptation may be more common for coastal flooding. 
@@ -717,7 +732,7 @@ In comparing these two maps it is very clear that the ex-situ adaptation funding
 
 \newpage
 
-# 5. Summary and Conclusions
+# Summary and Conclusions
 
 ## 5.1 Lack of Overall Trends in Flooding Adaptation 
 
