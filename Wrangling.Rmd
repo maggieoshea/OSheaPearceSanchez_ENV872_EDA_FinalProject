@@ -337,10 +337,10 @@ allinflationadjusted <- left_join(inflation_floodproperties_amountpaid, inflatio
 
 inflation_floodproperties_amountpaid inflation_buyoutfloodproperties_amountpaid inflation_insituprops_amountpaid
 ```{r}
-write.csv(all_data_bystate,"./Data/alldatabystate.csv")
-write.csv(zero_NA_alldata, "./Data/alldatabyyear.csv")
-write.csv(floodproperties_bystateperyear, "./Data/bystateandyearflood.csv")
-write.csv(allinflationadjusted, "./Data/inflationadjusted.csv")
+write.csv(all_data_bystate,"./Data/Processed/alldatabystate.csv")
+write.csv(zero_NA_alldata, "./Data/Processed/alldatabyyear.csv")
+write.csv(floodproperties_bystateperyear, "./Data/Processed/bystateandyearflood.csv")
+write.csv(allinflationadjusted, "./Data/Processed/inflationadjusted.csv")
 ```
 
 

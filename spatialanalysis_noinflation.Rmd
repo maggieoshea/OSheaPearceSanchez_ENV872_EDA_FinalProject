@@ -95,7 +95,7 @@ alldata.bycountyNC <- left_join(numberofprops.NC, amountpaid.NCall, by = c("coun
 
 alldata.bycountyNC[is.na(alldata.bycountyNC)] <- 0  
 
-write.csv(alldata.bycountyNC, "./Data/databycounty_forspatial.csv")
+write.csv(alldata.bycountyNC, "./Data/Processed/databycounty_forspatial.csv")
 
 flood_counties_join <- left_join(NC_countyboundaries, alldata.bycountyNC, by = "County")
 flood_counties_merge <-  merge(x = NC_countyboundaries,
