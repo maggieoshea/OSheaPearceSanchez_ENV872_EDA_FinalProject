@@ -114,7 +114,7 @@ The mitigated properties dataset required three different types of wrangling for
 
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-insitutypecodes.list <- list(Code = c(202.1,202.2,202.3,202.4,203.1,203.2,203.3,203.4,204.1,204.2,204.3,204.4,204.5,204.6,207.2), Activity = c("Elevation of Private Structures—Riverine", "Elevation of Private Structures—Coastal", "Elevation of Public Structures—Riverine", "Elevation of Public Structures—Coastal", "Wet Floodproofing Private Structures—Riverine", "Wet Floodproofing Private Structures—Coastal", "Wet Floodproofing Public Structures—Riverine", "Wet Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Commercial)", "Dry Floodproofing Private Structures—Coastal (Commercial)","Dry Floodproofing Public Structures—Riverine", "Dry Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Residential-Historic)", "Dry Floodproofing Private Structures—Coastal (Residential-Historic)", "Mitigation Reconstruction"))
+insitutypecodes.list <- list(Code = c(202.1,202.2,202.3,202.4,203.1,203.2,203.3,203.4,204.1,204.2,204.3,204.4,204.5,204.6,207.2), Activity = c("Elevation of Private Structures—Riverine", "Elevation of Private Structures—Coastal", "Elevation of Public Structures—Riverine", "Elevation of Public Structures—Coastal", "Wet Floodproofing Private Structures—Riverine", "Wet Floodproofing Private Structures—Coastal", "Wet Floodproofing Public Structures—Riverine", "Wet Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Commercial)", "Dry Floodproofing Private Structures—Coastal (Commercial)","Dry Floodproofing Public Structures—Riverine", "Dry Floodproofing Public Structures—Coastal", "Dry Floodproofing Private Structures—Riverine (Residential-Historic)", "Dry Floodproofing Private Structures—Coastal (Residential-Historic)", "Mitigation Reconstruction"))m
 
 insitu_type.df <- as.data.frame(do.call(cbind, insitutypecodes.list ))
 
@@ -127,7 +127,7 @@ typecodes <- rbind(insitu_type.df, exsitu_type.df)
 ```
 
 
-```{r}
+```{r message = FALSE, warning = FALSE, echo = FALSE, fig.cap= "Table 1: Selected Flooding Adaptation Type Codes"}
 gtobject <- gt(data = typecodes)
 gt.typecodes <- gtobject %>%
 
@@ -234,8 +234,8 @@ summary_exsitupaid2 <- summary.exsitu.amntpaid[, c(5, 1, 2, 3, 4)]
 Allsummarystatistics <- rbind(summary_allfloods2, summary_paidperyear2, summary_insituprops2, summary_insitupaid2, summary_exsituprops2, summary_exsitupaid2)
 ```
 
-```{r message=FALSE, warning=FALSE, echo=FALSE}
-library(gt)
+```{r message=FALSE, warning=FALSE, echo=FALSE, fig.cap= "Table 2: Mitigated Properties Dataset Summary Statistics"}
+
 gt.summstats <- Allsummarystatistics %>%
   rename("Category" = Name, "Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd) %>%   
   gt %>% 
@@ -292,18 +292,18 @@ gt.summstats
 
 After wrangling the data, we explored the data both over time as well as totals for the number of properties and amount paid in our dataset, compared between all flooding and ex-situ vs. in-situ. Figure 1 shows the differences in the total number of properties between 1985 and 2020 that received adaptation flooding, comparing all of the properties with ex-situ and in-situ. The graph shows that more properties received ex-situ than in-situ grants by a considerable amount. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap= "Figure 1: Total Properties that Received Flood Adaptation Funding from 1985 to 2020"}
 ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
   geom_bar(stat = "identity", fill = "lightblue4")+
   labs( 
-    title = "Total Properties Receiving Flooding Adaptation Funding from 1985 - 2020", 
+    title = "Total Properties that Received Flooding Adaptation Funding from 1985 - 2020", 
     x = "Adaptation Type", 
     y = "Number of Properties")
 ```
 
 To examine this relationship further, we compared the total amount paid for all adaptation types and in-situ vs. ex-situ in Figure 2. In including both the total amount paid as reported by FEMA as well as these values adjusted to 2020 dollars, this figure helps to also show the difference that inflation makes in the resulting total amount paid. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 2: Total Amount Paid for Flooding Adaptation from 1985 - 2020"}
 ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
   geom_bar(stat = "identity", fill = "lightblue3")+
   labs( 
@@ -313,9 +313,9 @@ ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
     y = "Amount Paid (USD)")
 ```
 
-Finally, figures 3 and 4 show this same data over time specifically focusing on the number of properties and total amount paid for all grants that went towards flooding adaptation. These graphs, as well as the graphs of ex-situ and in-situ data over time, are further examined in the analysis section including trend-lines to complement the time series analysis. 
+Finally, figures 3 and 4 show this same data over time. Figure 3 shows the number of properties that received flood adaptation grants per year between 1985 and 2020. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 3: Number of Properties that Received Flood Adaptation Grants from 1985 - 2020"}
 ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
   geom_bar(stat = "identity", fill = "lightblue4")+
   labs( 
@@ -324,7 +324,9 @@ ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
     y = "Number of Properties")
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+Figure 4 shows the total amount paid by FEMA through flood adaptation grants per year between 1985 and 2020.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Figure 4: Total Amount Paid for Flood Adaptation Grants from 1985 to 2020 in 2020 inflation adjusted U.S. dollars"}
 ggplot(data = inflation_data, aes(x = programFy, y = InflationAdjusted_AllAmountpaid)) +
   geom_bar(stat = "identity", fill = "lightblue3")+
   labs( 
@@ -332,6 +334,8 @@ ggplot(data = inflation_data, aes(x = programFy, y = InflationAdjusted_AllAmount
     x = "Year", 
     y = "Total Amount Paid (2020 USD)")
 ```
+
+These graphs, as well as the graphs of ex-situ and in-situ data over time, are further examined in the analysis section including trend-lines to complement the time series analysis. 
 
 \newpage
 
@@ -361,7 +365,7 @@ These data were also visualized through a spatial analysis of the number of prop
 
 Beginning with the analysis of all adaptation types, overall the only statistically significant monotonic trend found was the trend in the total amount paid for flood adaptation in the United States, before adjusting for inflation. The total number of properties that received adaptation funding from 1985 to 2020 did not have a statistically significant monotonic trend (p > 0.9) which is evident in figure 5 which shows the number of properties over time as well as the associated trend line. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap= "Figure 5: Number of Properties that Received Flood Adaptation Grants between 1985 and 2020"}
 ggplot(databyyear, aes(y= Floodpropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
@@ -372,7 +376,7 @@ ggplot(databyyear, aes(y= Floodpropertiesperyear, x = programFy)) +
 
 The second time series analysis which was statistically significant (p = 0.004), showed an increasing trend (tau = 0.361) in the total amount paid over time for flood adaptation through FEMA. Figure 6 shows this data over time with the associated trend line. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 6: Total Amount Paid for Flood Adaptation between 1985 and 2020"}
 ggplot(databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Floodproperties_amountpaid, x = programFy), color = "steelblue3", show.legend = FALSE)+
@@ -383,12 +387,11 @@ ggplot(databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) +
 
 However, after adjusting the total amount paid for each year for inflation and thus making each value in 2020 dollars this trend was no longer statistically significant (p = 0.568). This can be seen in figure 7 which shows the inflation adjusted values for total amount paid over time. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 7: Total Amount Paid for Flood Adaptation between 1985 and 2020: 2020 Inflation Adjusted U.S. Dollars"}
 ggplot(inflation_data, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
   geom_line() +
-  geom_smooth(method = lm, aes(y= InflationAdjusted_AllAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
-  labs(title = "Inflation Adjusted Total Amount Paid for Flood Adaptation in the United States",
-  subtitle = "1985 - 2020", 
+  geom_smooth(method = lm, aes(y= InflationAdjusted_AllAmountpaid, x = programFy), color = "steelblue3", show.legend = FALSE)+
+  labs(title = "Inflation Adjusted Total Amount Paid for Flood Adaptation in the United States: 1985 - 2020", 
        x = "Year", 
        y= "2020 US Dollars")
 ```
@@ -410,7 +413,7 @@ alladapt.results <- rbind(ts_propall_wrangle, ts_inflationpaidall_wrangle, ts_in
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 2: Results from Time Series Analysis of All Adaptation Types"}
 gt.alladaptresults <- alladapt.results  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -455,7 +458,7 @@ These findings suggest that there is no statistically significant monotonic tren
 
 The second analysis involved the three time series analyses identifying possible monotonic trends in ex-situ adaptation between 1985 and 2020. Again, the only statistically significant monotonic trend was the trend in total amount paid for buyouts before adjusting for inflation. There does appear to be a declining trend in the total number of properties that received ex-situ funding from FEMA as seen in Figure 8, however, the time series analysis reveals that this is not a statistically significant trend (p = 0.57). 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE fig.cap: "Figure 8:Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding between 1985 and 2020"}
 ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
@@ -467,7 +470,7 @@ ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
 
 The statistically significant monotonic trend in the total amount paid for buyouts (p = 0.003) can be found in figure 9. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap: "Figure 9: Total Amount Paid for Ex-Situ Adaptation to Flooding between 1985 and 2020"}
 ggplot(databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "steelblue3", show.legend = FALSE)+
@@ -480,7 +483,7 @@ ggplot(databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) +
 
 However, after adjusting for inflation, again, the trend in total amount paid was no longer found to be statistically significant with a p-value of 0.503 after adjusting each total amount paid value to 2020 dollars. Figure 10 shows the graph of this trendline and data over time. 
 
-```{r echo = FALSE, message = FALSE, warning = FALSE}
+```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap: "Figure 10: Total Amount Paid for Ex-Situ Adaptation to Flooding between 1985 and 2020 in 2020 Inflation Adjusted U.S. Dollars."}
 ggplot(inflation_data, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy), color = "steelblue3", show.legend = FALSE)+
@@ -507,7 +510,7 @@ buyouts.tsresults <- rbind(ts_propbuyout_wrangle , ts_paidbuyout_wrangle, ts_inf
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Table 3: Results from Time Series Analysis of Ex-Situ Adaptation"}
 gt.alladaptresults <- buyouts.tsresults  %>%
   gt %>% 
   fmt_number(columns = c(Result), decimals = 3) %>%
@@ -555,7 +558,7 @@ The final time series analysis examined in-situ adaptation specifically, which i
 
 The number of properties that received in-situ adaptation funding was found to have a statistically significant monotonic increasing trend (p = 0.0004, tau = 0.44). This trend can be seen in figure 11. 
 
-```{r echo = FALSE, message=FALSE, warning=FALSE}
+```{r echo = FALSE, message=FALSE, warning=FALSE, fig.cap: "Figure 11: Number of Properties that Received Grant Funding for In-Situ Adaptation to Flooding between 1985 and 2020."}
 ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "lightblue4", show.legend = FALSE)+
@@ -567,7 +570,7 @@ ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
 
 The other two analyses, total amount paid and inflation adjusted total amount paid, were not statistically significant with p-values of 0.207 and 0.484 respectively. The graphs showing this data over time with the associated trend line can be seen in figures 12 and 13. Both graphs show a drastic spike in payments in 2008 - this is likely due to Hurricane Katrina where significant funding was needed to help communities in Louisiana recover and adapt to these types of storms. 
 
-```{r message=FALSE, warning=FALSE, echo=FALSE}
+```{r message=FALSE, warning=FALSE, echo=FALSE, fig.cap: "Figure 12: Total Amount Paid for In-Situ Adaptation to Flooding between 1985 and 2020."}
 ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "steelblue4", show.legend = FALSE)+
@@ -578,7 +581,7 @@ ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) +
 ```
 
 
-```{r warning = FALSE, echo = FALSE, message = FALSE}
+```{r warning = FALSE, echo = FALSE, message = FALSE,  fig.cap: "Figure 13: Total Amount Paid for In-Situ Adaptation to Flooding between 1985 and 2020 in 2020 Inflation Adjusted U.S. Dollars."}
 ggplot(inflation_data, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
   geom_line() +
   geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "steelblue4", show.legend = FALSE)+
