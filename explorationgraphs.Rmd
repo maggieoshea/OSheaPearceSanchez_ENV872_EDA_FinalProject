@@ -50,7 +50,7 @@ totals_properties <- totals%>%
 
 totalprops_pivot <- pivot_longer(totals_properties, `Ex-Situ Properties`:`All Properties`, names_to = "Category", values_to = "Total")
 
-write.csv(totalprops_pivot, './Data/totalproperties_explorationgraph')
+write.csv(totalprops_pivot, './Data/Processed/totalproperties_explorationgraph')
 
 ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
   geom_bar(stat = "identity", fill = "lightblue4")+
@@ -63,7 +63,7 @@ ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
 ```{r}
 totals_inflation_pivot <- pivot_longer(totals_inflation, `Ex-Situ`:`All - Inflation`, names_to = "Category", values_to = "Total")
 
-write.csv(totals_inflation_pivot, './Data/totalamountpaidinflation_explorationgraph')
+write.csv(totals_inflation_pivot, './Data/Processed/totalamountpaidinflation_explorationgraph')
 
 ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
   geom_bar(stat = "identity", fill = "lightblue3")+
