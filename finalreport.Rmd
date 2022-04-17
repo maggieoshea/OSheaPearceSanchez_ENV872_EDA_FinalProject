@@ -63,26 +63,26 @@ theme_set(finalprojecttheme)
 # Load your datasets
 
 ## Load primary datasets
-inflation_data <- read.csv("./Data/inflationadjusted.csv")
-databyyear <- read.csv("./Data/alldatabyyear.csv")
-NC_flooddata<- read.csv("./Data/databycounty_forspatial.csv")
+inflation_data <- read.csv("./Data/Processed/inflationadjusted.csv")
+databyyear <- read.csv("./Data/Processed/alldatabyyear.csv")
+NC_flooddata<- read.csv("./Data/Processed/databycounty_forspatial.csv")
 NC_countyboundaries <- st_read('./Data/Raw_Data/North_Carolina_State_and_County_Boundary_Polygons')
 
 ## Load Data exploration wrangled data
-totalprops_pivot <- read.csv('./Data/totalproperties_explorationgraph')
-totals_inflation_pivot <- read.csv( './Data/totalamountpaidinflation_explorationgraph')
+totalprops_pivot <- read.csv('./Data/Processed/totalproperties_explorationgraph')
+totals_inflation_pivot <- read.csv( './Data/Processed/totalamountpaidinflation_explorationgraph')
 
 
 ## Load Time Series Results 
-ts_propall <- read.csv("./Data/tsresults_allprops.csv")
-ts_paidall <- read.csv("./Data/tsresults_allpaid.csv")
-ts_paidinflationall <- read.csv("./Data/tsresults_allpaidinflation.csv")
-ts_buyoutprops <- read.csv("./Data/tsresults_buyoutprops.csv")
-ts_buyoutpaid <- read.csv("./Data/tsresults_buyoutamountpaid.csv")
-ts_buyoutpaidinflation <- read.csv("./Data/tsresults_buyoutamountpaidinflation.csv")
-ts_insituprops <- read.csv("./Data/tsresults_insituprops.csv")
-ts_insitupaid <- read.csv("./Data/tsresults_insituamountpaid.csv")
-ts_insitupaidinflation <- read.csv("./Data/tsresults_insituamountpaidinflation.csv")
+ts_propall <- read.csv("./Data/Processed/Time_Series_Results/tsresults_allprops.csv")
+ts_paidall <- read.csv("./Data/Processed/Time_Series_Results/tsresults_allpaid.csv")
+ts_paidinflationall <- read.csv("./Data/Processed/Time_Series_Results/tsresults_allpaidinflation.csv")
+ts_buyoutprops <- read.csv("./Data/Processed/Time_Series_Results/tsresults_buyoutprops.csv")
+ts_buyoutpaid <- read.csv("./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaid.csv")
+ts_buyoutpaidinflation <- read.csv("./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaidinflation.csv")
+ts_insituprops <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituprops.csv")
+ts_insitupaid <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituamountpaid.csv")
+ts_insitupaidinflation <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituamountpaidinflation.csv")
 
 
 

@@ -71,7 +71,7 @@ allprops.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.0, 1))
 
 df.allprops <- as.data.frame(do.call(cbind, allprops.list))
-write.csv(df.allprops, "./Data/tsresults_allprops.csv")
+write.csv(df.allprops, "./Data/Processed/Time_Series_Results/tsresults_allprops.csv")
 
 ```
 
@@ -100,7 +100,7 @@ allpaid.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.361, 0.005))
 
 df.allpaid <- as.data.frame(do.call(cbind, allpaid.list))
-write.csv(df.allpaid, "./Data/tsresults_allpaid.csv")
+write.csv(df.allpaid, "./Data/Processed/Time_Series_Results/tsresults_allpaid.csv")
 ```
 
 # Time Series Analysis of Trends in Amount Paid Per year
@@ -143,7 +143,7 @@ allpaidinflat.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.087, 0.568))
 
 df.allpaidinflation <- as.data.frame(do.call(cbind, allpaidinflat.list))
-write.csv(df.allpaidinflation, "./Data/tsresults_allpaidinflation.csv")
+write.csv(df.allpaidinflation, "./Data/Processed/Time_Series_Results/tsresults_allpaidinflation.csv")
 
 results_allpaidinflat <- gt(df.allpaidinflation )%>%
   tab_header(
@@ -182,7 +182,7 @@ buyoutprops.list <- list(Measure = c("Tau", "P-value"),
              Result = c(-0.073, 0.570))
 
 df.buyoutsprops <- as.data.frame(do.call(cbind, buyoutprops.list))
-write.csv(df.buyoutsprops, "./Data/tsresults_buyoutprops.csv")
+write.csv(df.buyoutsprops, "./Data/Processed/Time_Series_Results/tsresults_buyoutprops.csv")
 
 results_buyoutprops <- gt(df.buyoutsprops)%>%
   tab_header(
@@ -220,7 +220,7 @@ buyoutamountpaid.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.374, 0.003))
 
 df.buyoutamountpaid <- as.data.frame(do.call(cbind, buyoutamountpaid.list))
-write.csv(df.buyoutsprops, "./Data/tsresults_buyoutamountpaid.csv")
+write.csv(df.buyoutsprops, "./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaid.csv")
 
 ```
 
@@ -256,7 +256,7 @@ buyoutamountpaidinflation.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.101, 0.503))
 
 df.buyoutamountpaidinflation <- as.data.frame(do.call(cbind, buyoutamountpaidinflation.list))
-write.csv(df.buyoutamountpaidinflation , "./Data/tsresults_buyoutamountpaidinflation.csv")
+write.csv(df.buyoutamountpaidinflation , "./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaidinflation.csv")
 ```
 
 # Time Series Analysis of Monotonic Trends in Amount Paid for Buyouts *Inflation Adjusted*
@@ -294,7 +294,7 @@ insituprops.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.44, 0.0004))
 
 df.insituprops <- as.data.frame(do.call(cbind, insituprops.list))
-write.csv(df.insituprops , "./Data/tsresults_insituprops.csv")
+write.csv(df.insituprops , "./Data/Processed/Time_Series_Results/tsresults_insituprops.csv")
 ```
 
 # Time Series Analysis of Monotonic Trends in Number of Properties Receiving In Situ Funding
@@ -332,7 +332,7 @@ insituamountpaid.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.167, 0.207))
 
 df.insituamountpaid <- as.data.frame(do.call(cbind, insituamountpaid.list))
-write.csv(df.insituamountpaid , "./Data/tsresults_insituamountpaid.csv")
+write.csv(df.insituamountpaid , "./Data/Processed/Time_Series_Results/tsresults_insituamountpaid.csv")
 ```
 
 # Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation
@@ -366,7 +366,7 @@ insituamountpaidinflation.list <- list(Measure = c("Tau", "P-value"),
              Result = c(0.123, 0.484))
 
 df.insituamountpaidinflation <- as.data.frame(do.call(cbind, insituamountpaidinflation.list))
-write.csv(df.insituamountpaidinflation , "./Data/tsresults_insituamountpaidinflation.csv")
+write.csv(df.insituamountpaidinflation , "./Data/Processed/Time_Series_Results/tsresults_insituamountpaidinflation.csv")
 ```
 
 # Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation *Inflation Adjusted*
