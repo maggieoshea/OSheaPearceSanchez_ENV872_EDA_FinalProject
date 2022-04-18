@@ -19,15 +19,19 @@ mainfont: Times New Roman
 \newpage
 \listoftables   
 
-1 Selected Flooding Adaptation Type Codes..................................... 7   
+1 OpenFEMA Mitigated Properties Dataset Overview...........................6  
 \newline
-2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics.............. 8    
+2 North Carolina County Boundaries Dataset Overview..........................7  
 \newline
-3 Results from Time Series Analysis of All Adaptation Types................... 17     
+3 Selected Flooding Adaptation Type Codes....................................8   
 \newline
-4 Results from Time Series Analysis of Ex-Situ Adaptation..................... 21     
+4 FEMA Hazard Mitigated Properties Dataset: Summary Statistics..............9    
 \newline
-5 Results from Time Series Analysis of In-Situ Adaptation...................... 25    
+5 Results from Time Series Analysis of All Adaptation Types....................18     
+\newline
+6 Results from Time Series Analysis of Ex-Situ Adaptation......................22     
+\newline
+5 Results from Time Series Analysis of In-Situ Adaptation.......................26    
 \newpage
 \listoffigures 
 \newpage
@@ -67,10 +71,10 @@ library(kableExtra)
 # Set your ggplot theme
 
 finalprojecttheme <- theme_light(base_size = 14) +
-  theme(axis.text = element_text(color = "black", size = 9), 
+  theme(axis.text = element_text(color = "black", size = 9, family = "Times"), 
             legend.position = "right",  
-            plot.title = element_text(size=11.5), 
-            plot.subtitle = element_text(size=10),
+            plot.title = element_text(size=11.5, family = "Times"), 
+            plot.subtitle = element_text(size=10, family = "Times"),
             axis.title = element_text(size = 11, family = "Times"))
 theme_set(finalprojecttheme)
 
@@ -114,15 +118,71 @@ It will be increasingly important to understand the resources that are already a
 
 The temporal scale of the research was defined by the FEMA Mitigated Properties dataset which included information on grants from 1985 until 2020 allowing the time series analysis to cover a 35 year time-frame. The grants included those received in all states in the United States. This analysis also included a brief spatial analysis focusing on one state in particular to spatially visualize the data as well as examine potential spatial trends in ex-situ vs. in-situ adaptation funding. 
 
+
 \newpage
 
 # Dataset Information
 
 ## Dataset Background and Retrieval: 
 
-We used data managed by the Federal Emergency Management Agency’s National Emergency Management Information Systems, downloaded directly in a CSV format through FEMA’s OpenFEMA resource. The dataset includes the record of properties that received grant assistance for hazard mitigation through any of the Hazard Mitigation Assistance grant programs, programs administered by FEMA that seek to reduce losses from disasters as well as protect life and property in the face of hazards (FEMA 2022). This includes: the Hazard Mitigation Grant Program, the Flood Mitigation Assistance Grant Program, and the Pre-Disaster Mitigation Grant Program (ibid.). Entries prior to 2012 also include grants received through the Repetitive Flood Claims Grant program and Severe Repetitive Loss Grant Program which both were eliminated through the Biggert Water Flood Insurance Reform Act of 2012 (ibid.). Each entry includes data such as the total amount paid, the number of properties receiving support, the hazard that the grant is adapting against, the program year, and others. The variables we used in particular were: Total Amount Paid per grant, Number of Properties per grant, Program Year, and the county where the grant was funded. These were wrangled and summed for our analysis. 
+We used data managed by the Federal Emergency Management Agency’s National Emergency Management Information Systems, downloaded directly in a CSV format through FEMA’s OpenFEMA resource. The dataset includes the record of properties that received grant assistance for hazard mitigation through any of the Hazard Mitigation Assistance grant programs, programs administered by FEMA that seek to reduce losses from disasters as well as protect life and property in the face of hazards (FEMA 2022). This includes: the Hazard Mitigation Grant Program, the Flood Mitigation Assistance Grant Program, and the Pre-Disaster Mitigation Grant Program (ibid.). Entries prior to 2012 also include grants received through the Repetitive Flood Claims Grant program and Severe Repetitive Loss Grant Program which both were eliminated through the Biggert Water Flood Insurance Reform Act of 2012 (ibid.). Each entry includes data such as the total amount paid, the number of properties receiving support, the hazard that the grant is adapting against, the program year, and others. The variables we used in particular were: Total Amount Paid per grant, Number of Properties per grant, Program Year, and the county where the grant was funded. A summary of this dataset information can be found in Table 1. These were wrangled and summed for our analysis. 
 
-For the spatial analysis, the county boundaries for North Carolina were downloaded from the OpenESRI platform which had the State of North Carolina’s Emergency Management Agency’s best current available data as of 2020. These boundaries were identified through sources including the North Carolina Geodetic Survey, the North Carolina Department of Transportation, the United States Geological Survey, as well as field surveys that have been recorded by the respective county (State of North Carolina 2020). 
+*Table 1: OpenFEMA Mitigated Properties Dataset*
+```{r echo = FALSE, message=FALSE, warning=FALSE}
+table1 <- list(Detail = c("Data Source", "Variables Used", "Date Range"), Description = c("OpenFEMA", "Total Amount Paid, Program Year, Number of Properties, County, State ", "1985 - 2020"))
+
+table1.df <- as.data.frame(do.call(cbind, table1))
+
+table1.gt <- gt(data = table1.df, caption  = "Table 1")
+
+gt.dataset1 <- table1.gt %>%
+
+  tab_header(
+    title="Mitigated Properties Dataset Overview"
+  ) %>% 
+  
+  tab_options(
+    row_group.font.weight = "bold",
+    row_group.border.bottom.width = 1, 
+    table_body.vlines.style = "dashed", 
+    table_body.vlines.width = 0.5, 
+    table_body.vlines.color = "grey"
+  )
+
+  
+gt.dataset1
+```
+
+
+For the spatial analysis, the county boundaries for North Carolina were downloaded from the OpenESRI platform which had the State of North Carolina’s Emergency Management Agency’s best current available data as of 2020. These boundaries were identified through sources including the North Carolina Geodetic Survey, the North Carolina Department of Transportation, the United States Geological Survey, as well as field surveys that have been recorded by the respective county (State of North Carolina 2020). A summary of this dataset can be found in Table 2. 
+\newpage
+
+*Table 2: North Carolina County Boundaries Dataset Overview*
+```{r echo = FALSE, message=FALSE, warning=FALSE}
+table2 <- list(Detail = c("Data Source", "Variable Used", "Date"), Description = c("ArcGIS Hub, State of North Carolina", "County Polygons", "2020"))
+
+table2.df <- as.data.frame(do.call(cbind, table2))
+
+table2.gt <- gt(data = table2.df, caption  = "Table 2")
+
+gt.dataset2 <- table2.gt %>%
+
+  tab_header(
+    title="North Carolina County Boundaries Dataset Overview"
+  ) %>% 
+  
+  tab_options(
+    row_group.font.weight = "bold",
+    row_group.border.bottom.width = 1, 
+    table_body.vlines.style = "dashed", 
+    table_body.vlines.width = 0.5, 
+    table_body.vlines.color = "grey"
+  )
+
+  
+gt.dataset2
+```
+
 
 ## Data Wrangling
 
@@ -142,9 +202,10 @@ exsitu_type.df <- as.data.frame(do.call(cbind, exsitutypecodes.list))
 typecodes <- rbind(insitu_type.df, exsitu_type.df)
 ```
 \newpage
-                    *Table 1: Selected Flooding Adaptation Type Codes*      
+
+*Table 3: Selected Flooding Adaptation Type Codes*      
 ```{r message = FALSE, warning = FALSE, echo = FALSE}
-gtobject <- gt(data = typecodes, caption  = "Table 1: Selected Flooding Adaptation Type Codes")
+gtobject <- gt(data = typecodes, caption  = "Table 3: Selected Flooding Adaptation Type Codes")
 ```
 
 ```{r message = FALSE, warning = FALSE, echo = FALSE}
@@ -181,9 +242,9 @@ gt.typecodes
 
 ```
 
-In order to do so, we first examined and explored the dataset and found that some entries had a total amount paid that was negative. Because the OpenFEMA information page included a note that these were manually entered data and subject to human error, we made the assumption that this was due to human error and removed these negative values from our analysis. After doing so, we used this cleaned mitigated properties dataset to create our three different types of wrangled datasets. This involved, first, examining the “type” codes to identify which type codes indicate that the grants were used for flooding. Table 1 shows the type codes that were used, grouped by ex-situ and in-situ codes. These type codes together were used to find all flooding grants regardless of adaptation type. 
+In order to do so, we first examined and explored the dataset and found that some entries had a total amount paid that was negative. Because the OpenFEMA information page included a note that these were manually entered data and subject to human error, we made the assumption that this was due to human error and removed these negative values from our analysis. After doing so, we used this cleaned mitigated properties dataset to create our three different types of wrangled datasets. This involved, first, examining the “type” codes to identify which type codes indicate that the grants were used for flooding. Table 3 shows the type codes that were used, grouped by ex-situ and in-situ codes. These type codes together were used to find all flooding grants regardless of adaptation type. 
 
-After selecting out the relevant flooding type codes, we grouped by year or county and summarized the datasets to find the sum of the number of properties and the total amount paid for each category we were examining in this analysis (amount paid for all flooding grants per year, amount paid for ex-situ grants per year, etc.).For the total amount paid categories specifically, using the “priceR” package, we adjusted each of the total amount paid values per year for all adaptation, ex-situ, and in-situ for inflation. Summary statistics for the respective wrangled datasets can be found in table 2. 
+After selecting out the relevant flooding type codes, we grouped by year or county and summarized the datasets to find the sum of the number of properties and the total amount paid for each category we were examining in this analysis (amount paid for all flooding grants per year, amount paid for ex-situ grants per year, etc.).For the total amount paid categories specifically, using the “priceR” package, we adjusted each of the total amount paid values per year for all adaptation, ex-situ, and in-situ for inflation. Summary statistics for the respective wrangled datasets can be found in table 4. 
 
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -255,7 +316,7 @@ Allsummarystatistics <- rbind(summary_allfloods2, summary_paidperyear2, summary_
 
 
 
-*Table 2: FEMA Hazard Mitigated Properties Dataset: Summary Statistics*                  
+*Table 4: FEMA Hazard Mitigated Properties Dataset: Summary Statistics*                  
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 
 gt.summstats <- Allsummarystatistics %>%
@@ -438,7 +499,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) +
 
 
 \newpage
-A summary of each of these time series results can be found in table 3. 
+A summary of each of these time series results can be found in table 5. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 ts_propall_wrangle <- ts_propall%>%
@@ -455,7 +516,7 @@ alladapt.results <- rbind(ts_propall_wrangle, ts_inflationpaidall_wrangle, ts_in
 
 ```
 
-*Table 3: Results from Time Series Analysis of All Adaptation Types*                    
+*Table 5: Results from Time Series Analysis of All Adaptation Types*                    
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.alladaptresults <- alladapt.results  %>%
   gt %>% 
@@ -541,7 +602,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)
 ```
 
 \newpage
-A table of the results of all of these three analyses can be found in table 4. 
+A table of the results of all of these three analyses can be found in table 6. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 ts_propbuyout_wrangle <- ts_buyoutprops%>%
@@ -558,7 +619,7 @@ buyouts.tsresults <- rbind(ts_propbuyout_wrangle , ts_paidbuyout_wrangle, ts_inf
 
 ```
 
-*Table 4: Results from Time Series Analysis of Ex-Situ Adaptation*              
+*Table 6: Results from Time Series Analysis of Ex-Situ Adaptation*              
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.alladaptresults <- buyouts.tsresults  %>%
   gt %>% 
@@ -617,6 +678,8 @@ ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
   x = "Year", 
   y = "Number of Properties")
 ```
+
+
 \newpage
 
 The other two analyses, total amount paid and inflation adjusted total amount paid, were not statistically significant with p-values of 0.207 and 0.484 respectively. The graphs showing this data over time with the associated trend line can be seen in figures 12 and 13. Both graphs show a drastic spike in payments in 2008 - this is likely due to Hurricane Katrina where significant funding was needed to help communities in Louisiana recover and adapt to these types of storms. 
@@ -641,7 +704,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)
 ```
 
 \newpage
-A table of each of these time series results can be found in table 5. 
+A table of each of these time series results can be found in table 7. 
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
@@ -663,7 +726,7 @@ insitu.tsresults <- rbind(ts_propINSITU_wrangle , ts_paidINSITU_wrangle, ts_infl
 
 
 
-*Table 5: Results from Time Series Analysis of In-Situ Adaptation*            
+*Table 7: Results from Time Series Analysis of In-Situ Adaptation*            
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.insituresults <- insitu.tsresults  %>%
   gt %>% 
@@ -735,6 +798,7 @@ ggplot(data=flood_counties_join) +
 ```
 
 \newpage
+
 Figure 15 and 16 help to compare the areas that have a high number of properties that received flooding adaptation grants for ex-situ vs. in-situ grants. 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Spatial Distribution of the Number of Properties that Received In-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
@@ -749,6 +813,8 @@ ggplot(data=flood_counties_join) +
         legend.text = element_text(size = 9), 
         legend.title = element_text(size = 9))
 ```
+
+
 \newpage
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Spatial Distribution of the Number of Properties that Received Ex-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
