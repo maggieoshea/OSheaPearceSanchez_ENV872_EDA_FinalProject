@@ -73,10 +73,22 @@ United States}
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
-\usepackage{amsmath}
 \usepackage{booktabs}
-\usepackage{caption}
 \usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{caption}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -84,18 +96,33 @@ United States}
 \begin{document}
 \maketitle
 
+\hypertarget{left-to-do}{%
+\section{Left to do:}\label{left-to-do}}
+
+\begin{itemize}
+\tightlist
+\item
+  Figure out a way to get the table names into the table of contents
+\item
+  Figure out why the figures are knitting in the wrong place
+\end{itemize}
+
 \newpage
 \tableofcontents 
 \newpage
-\listoftables 
+\listoftables   
 1
 
-Selected Flooding Adaptation Type
-Codes\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots..7\\
+Selected Flooding Adaptation Type Codes\\
+\newline
 2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics\\
+\newline
 3 Results from Time Series Analysis of All Adaptation Types\\
+\newline
 4 Results from Time Series Analysis of Ex-Situ Adaptation\\
-5 Results from Time Series Analysis of In-Situ Adaptation \newpage
+\newline
+5 Results from Time Series Analysis of In-Situ Adaptation\\
+\newpage
 
 \listoffigures 
 \newpage
@@ -215,10 +242,10 @@ for our spatial analysis.
 
 \newpage
 
-\emph{Table 1: Selected Flooding Adaptation Type Codes}\\
+\emph{Table 1: Selected Flooding Adaptation Type Codes}
+
 \captionsetup[table]{labelformat=empty,skip=1pt}
 \setlength{\LTpost}{0mm}
-
 \begin{longtable}{ll}
 \caption*{
 {\large Mitigated Properties Flooding Type Codes}
@@ -331,7 +358,7 @@ ex-situ than in-situ grants by a considerable amount.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-5-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-6-1.pdf}
 \caption{Total Properties that Received Flood Adaptation Funding from
 1985 to 2020}
 \end{figure}
@@ -345,7 +372,7 @@ the difference that inflation makes in the resulting total amount paid.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-6-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-7-1.pdf}
 \caption{Total Amount Paid for Flooding Adaptation from 1985 - 2020}
 \end{figure}
 
@@ -355,7 +382,7 @@ between 1985 and 2020. \newline
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-8-1.pdf}
 \caption{Number of Properties that Received Flood Adaptation Grants from
 1985 - 2020}
 \end{figure}
@@ -365,7 +392,7 @@ grants per year between 1985 and 2020. \newline
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-9-1.pdf}
 \caption{Total Amount Paid for Flood Adaptation Grants from 1985 to 2020
 in 2020 inflation adjusted U.S. dollars}
 \end{figure}
@@ -450,7 +477,7 @@ associated trend line.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-10-1.pdf}
 \caption{Number of Properties that Received Flood Adaptation Grants
 between 1985 and 2020}
 \end{figure}
@@ -462,7 +489,7 @@ data over time with the associated trend line.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-11-1.pdf}
 \caption{Total Amount Paid for Flood Adaptation between 1985 and 2020}
 \end{figure}
 
@@ -474,7 +501,7 @@ time.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-12-1.pdf}
 \caption{Total Amount Paid for Flood Adaptation between 1985 and 2020:
 2020 Inflation Adjusted U.S. Dollars}
 \end{figure}
@@ -531,7 +558,7 @@ significant trend (p = 0.57).
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-15-1.pdf}
 \caption{Number of Properties that Received Funding for Ex-Situ
 Adaptation to Flooding between 1985 and 2020}
 \end{figure}
@@ -541,7 +568,7 @@ for buyouts (p = 0.003) can be found in figure 9.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-15-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-16-1.pdf}
 \caption{Total Amount Paid for Ex-Situ Adaptation to Flooding between
 1985 and 2020}
 \end{figure}
@@ -553,7 +580,7 @@ Figure 10 shows the graph of this trendline and data over time.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-17-1.pdf}
 \caption{Total Amount Paid for Ex-Situ Adaptation to Flooding between
 1985 and 2020 in 2020 Inflation Adjusted U.S. Dollars.}
 \end{figure}
@@ -616,7 +643,7 @@ found to have a statistically significant monotonic increasing trend (p
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-19-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-20-1.pdf}
 \caption{Number of Properties that Received Grant Funding for In-Situ
 Adaptation to Flooding between 1985 and 2020.}
 \end{figure}
@@ -631,14 +658,14 @@ Louisiana recover and adapt to these types of storms.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-20-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-21-1.pdf}
 \caption{Total Amount Paid for In-Situ Adaptation to Flooding between
 1985 and 2020.}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-22-1.pdf}
 \caption{Total Amount Paid for In-Situ Adaptation to Flooding between
 1985 and 2020 in 2020 Inflation Adjusted U.S. Dollars.}
 \end{figure}
@@ -708,7 +735,7 @@ that received flooding adaptation grants by county.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-26-1.pdf}
 \caption{Spatial Distribution of the Number of Properties that Received
 Flooding Adaptation Grant Funding between 1985 - 2020}
 \end{figure}
@@ -719,14 +746,14 @@ vs.~in-situ grants.
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-26-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-27-1.pdf}
 \caption{Spatial Distribution of the Number of Properties that Received
 In-Situ Flooding Adaptation Grant Funding between 1985 - 2020}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics{finalreport_files/figure-latex/unnamed-chunk-27-1.pdf}
+\includegraphics{finalreport_files/figure-latex/unnamed-chunk-28-1.pdf}
 \caption{Spatial Distribution of the Number of Properties that Received
 Ex-Situ Flooding Adaptation Grant Funding between 1985 - 2020}
 \end{figure}

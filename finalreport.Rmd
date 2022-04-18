@@ -8,6 +8,7 @@ output:
     number_sections: yes
   html_document:
     df_print: paged
+    extra_dependencies: ["float"]
 subtitle: https://github.com/maggieoshea/OSheaPearceSanchez_ENV872_EDA_FinalProject.git
 geometry: margin=2.54cm
 fontsize: 12pt
@@ -17,17 +18,20 @@ mainfont: Times New Roman
 # Left to do: 
 * Figure out a way to get the table names into the table of contents
 * Figure out why the figures are knitting in the wrong place
-* Set theme so that the axis text aren't bigger than the title text 
 
 \newpage
 \tableofcontents 
 \newpage
-\listoftables 
-1 Selected Flooding Adaptation Type Codes..........................7  
-2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics  
+\listoftables   
+1Selected Flooding Adaptation Type Codes  
+\newline
+2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics    
+\newline
 3 Results from Time Series Analysis of All Adaptation Types      
+\newline
 4 Results from Time Series Analysis of Ex-Situ Adaptation     
-5 Results from Time Series Analysis of In-Situ Adaptation 
+\newline
+5 Results from Time Series Analysis of In-Situ Adaptation    
 \newpage
 \listoffigures 
 \newpage
@@ -37,6 +41,8 @@ options(tinytex.verbose = TRUE)
 ```
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+
+
 # Set your working directory
 getwd()
 
@@ -50,18 +56,27 @@ library(leaflet)
 #install.packages('mapview')
 #install.packages("mdthemes")
 library(mdthemes)
+remove.packages("gt")
+install.packages("gt")
 library(gt)
+#remove.packages("gtsummary")
+#install.packages("gtsummary", stringAsFactors = TRUE)
+library(gtsummary)
 library(RColorBrewer)
 library(viridis)
+library(knitr)
+library(kableExtra)
+
 
 
 # Set your ggplot theme
 
 finalprojecttheme <- theme_light(base_size = 14) +
-  theme(axis.text = element_text(color = "black"), 
+  theme(axis.text = element_text(color = "black", size = 9), 
             legend.position = "right",  
-            plot.title = element_text(size=11), 
-            plot.subtitle = element_text(size=10))
+            plot.title = element_text(size=11.5), 
+            plot.subtitle = element_text(size=10),
+            axis.title = element_text(size = 10))
 theme_set(finalprojecttheme)
 
 # Load your datasets
@@ -89,7 +104,8 @@ ts_insitupaid <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insitu
 ts_insitupaidinflation <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituamountpaidinflation.csv")
 
 
-
+uninstall(pkg = "rstudio/gt", unload = TRUE, quiet = FALSE, lib = .libPaths()[[1]])
+remove.packages("rstudio/gt", ref="eff3be7384365a44459691e49b9b740420cd0851")
 
 ```
 
@@ -135,13 +151,16 @@ exsitu_type.df <- as.data.frame(do.call(cbind, exsitutypecodes.list))
 typecodes <- rbind(insitu_type.df, exsitu_type.df)
 ```
 \newpage
-                    *Table 1: Selected Flooding Adaptation Type Codes*                
+                    *Table 1: Selected Flooding Adaptation Type Codes*      
 ```{r message = FALSE, warning = FALSE, echo = FALSE}
 gtobject <- gt(data = typecodes, caption  = "Table 1: Selected Flooding Adaptation Type Codes")
+```
+
+```{r message = FALSE, warning = FALSE, echo = FALSE}
 gt.typecodes <- gtobject %>%
 
   tab_header(
-    title="Mitigated Properties Flooding Type Codes",
+    title="Mitigated Properties Flooding Type Codes"
   ) %>% 
   
   tab_options(
@@ -263,6 +282,7 @@ gt.summstats <- Allsummarystatistics %>%
   
   tab_header(
     title=md("**Administration of Hazard Mitigation Grants**"),
+    label = "tab:tab2"
   ) %>% 
   
   tab_options(
@@ -313,11 +333,12 @@ ggplot(data = totalprops_pivot, aes(x = Category, y = Total)) +
     y = "Number of Properties")
 ```
 
+\newpage
 
 To examine this relationship further, we compared the total amount paid for all adaptation types and in-situ vs. ex-situ in Figure 2. In including both the total amount paid as reported by FEMA as well as these values adjusted to 2020 dollars, this figure helps to also show the difference that inflation makes in the resulting total amount paid. 
 \newline
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Total Amount Paid for Flooding Adaptation from 1985 - 2020"}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos = '!h', fig.cap = "Total Amount Paid for Flooding Adaptation from 1985 - 2020"}
 ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
   geom_bar(stat = "identity", fill = "steelblue3")+
   labs( 
@@ -338,6 +359,7 @@ ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
     x = "Year", 
     y = "Number of Properties")
 ```
+\newpage
 
 Figure 4 shows the total amount paid by FEMA through flood adaptation grants per year between 1985 and 2020.
 \newline
@@ -400,6 +422,7 @@ ggplot(databyyear, aes(y= Floodpropertiesperyear, x = programFy)) +
 ```
 
 The second time series analysis which was statistically significant (p = 0.004), showed an increasing trend (tau = 0.361) in the total amount paid over time for flood adaptation through FEMA. Figure 6 shows this data over time with the associated trend line. 
+\newpage
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Total Amount Paid for Flood Adaptation between 1985 and 2020"}
 ggplot(databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
@@ -420,7 +443,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) +
        x = "Year", 
        y= "2020 US Dollars")
 ```
-
+\newpage
 A summary of each of these time series results can be found in table 3. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
@@ -446,6 +469,7 @@ gt.alladaptresults <- alladapt.results  %>%
 
   tab_header(
     title=md("***Time Series Analysis Results: All Adaptation Types***"),
+    label = "tab:tab3"
   ) %>% 
   
   cols_hide(columns = c(
@@ -496,6 +520,7 @@ ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
   y = "Number of Properties", 
   x = "Year")
 ```
+\newpage
 
 The statistically significant monotonic trend in the total amount paid for buyouts (p = 0.003) can be found in figure 9. 
 
@@ -510,7 +535,7 @@ ggplot(databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) +
   x = "Year") 
 ```
 
-
+\newpage
 However, after adjusting for inflation, again, the trend in total amount paid was no longer found to be statistically significant with a p-value of 0.503 after adjusting each total amount paid value to 2020 dollars. Figure 10 shows the graph of this trendline and data over time. 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Total Amount Paid for Ex-Situ Adaptation to Flooding between 1985 and 2020 in 2020 Inflation Adjusted U.S. Dollars."}
@@ -523,6 +548,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)
        y= "2020 US Dollars") 
 ```
 
+\newpage
 A table of the results of all of these three analyses can be found in table 4. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
@@ -539,7 +565,7 @@ ts_inflationpaidBUYOUT_wrangle <- ts_buyoutpaidinflation%>%
 buyouts.tsresults <- rbind(ts_propbuyout_wrangle , ts_paidbuyout_wrangle, ts_inflationpaidBUYOUT_wrangle)
 
 ```
-\newpage
+
 *Table 4: Results from Time Series Analysis of Ex-Situ Adaptation*              
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 gt.alladaptresults <- buyouts.tsresults  %>%
@@ -548,6 +574,7 @@ gt.alladaptresults <- buyouts.tsresults  %>%
 
   tab_header(
     title=md("***Time Series Analysis Results: Ex-Situ Adaptation***"),
+    label = "tab:tab4"
   ) %>% 
   
   cols_hide(columns = c(
@@ -602,6 +629,7 @@ ggplot(databyyear, aes(y= insitupropertiesperyear, x = programFy)) +
 
 The other two analyses, total amount paid and inflation adjusted total amount paid, were not statistically significant with p-values of 0.207 and 0.484 respectively. The graphs showing this data over time with the associated trend line can be seen in figures 12 and 13. Both graphs show a drastic spike in payments in 2008 - this is likely due to Hurricane Katrina where significant funding was needed to help communities in Louisiana recover and adapt to these types of storms. 
 
+\newpage
 ```{r message=FALSE, warning=FALSE, echo=FALSE, fig.cap = "Total Amount Paid for In-Situ Adaptation to Flooding between 1985 and 2020."}
 ggplot(databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 
   geom_line() +
@@ -623,7 +651,7 @@ ggplot(inflation_data, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)
        y= "2020 US Dollars")
 ```
 
-
+\newpage
 A table of each of these time series results can be found in table 5. 
 
 
@@ -654,6 +682,7 @@ gt.insituresults <- insitu.tsresults  %>%
 
   tab_header(
     title=md("***Time Series Analysis Results: In-Situ Adaptation***"),
+    label = "tab:tab5"
   ) %>% 
   
   cols_hide(columns = c(
@@ -717,6 +746,7 @@ ggplot(data=flood_counties_join) +
         legend.title = element_text(size = 9))
 ```
 
+\newpage
 Figure 15 and 16 help to compare the areas that have a high number of properties that received flooding adaptation grants for ex-situ vs. in-situ grants. 
 
 ```{r echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Spatial Distribution of the Number of Properties that Received In-Situ Flooding Adaptation Grant Funding between 1985 - 2020"}
