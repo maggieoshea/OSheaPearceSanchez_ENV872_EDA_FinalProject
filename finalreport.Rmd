@@ -8,30 +8,26 @@ output:
     number_sections: yes
   html_document:
     df_print: paged
-    extra_dependencies: ["float"]
 subtitle: https://github.com/maggieoshea/OSheaPearceSanchez_ENV872_EDA_FinalProject.git
 geometry: margin=2.54cm
 fontsize: 12pt
 mainfont: Times New Roman
 ---
 
-# Left to do: 
-* Figure out a way to get the table names into the table of contents
-* Figure out why the figures are knitting in the wrong place
-
 \newpage
 \tableofcontents 
 \newpage
 \listoftables   
-1Selected Flooding Adaptation Type Codes  
+
+1 Selected Flooding Adaptation Type Codes..................................... 7   
 \newline
-2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics    
+2 FEMA Hazard Mitigated Properties Dataset: Summary Statistics.............. 8    
 \newline
-3 Results from Time Series Analysis of All Adaptation Types      
+3 Results from Time Series Analysis of All Adaptation Types................... 17     
 \newline
-4 Results from Time Series Analysis of Ex-Situ Adaptation     
+4 Results from Time Series Analysis of Ex-Situ Adaptation..................... 21     
 \newline
-5 Results from Time Series Analysis of In-Situ Adaptation    
+5 Results from Time Series Analysis of In-Situ Adaptation...................... 25    
 \newpage
 \listoffigures 
 \newpage
@@ -75,7 +71,7 @@ finalprojecttheme <- theme_light(base_size = 14) +
             legend.position = "right",  
             plot.title = element_text(size=11.5), 
             plot.subtitle = element_text(size=10),
-            axis.title = element_text(size = 10))
+            axis.title = element_text(size = 11, family = "Times"))
 theme_set(finalprojecttheme)
 
 # Load your datasets
@@ -343,7 +339,7 @@ ggplot(data = totals_inflation_pivot, aes(x = Category, y = Total)) +
 ```
 
 Finally, figures 3 and 4 show this same data over time. Figure 3 shows the number of properties that received flood adaptation grants per year between 1985 and 2020. 
-\newline
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Number of Properties that Received Flood Adaptation Grants from 1985 - 2020"}
 ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
@@ -353,6 +349,8 @@ ggplot(data = databyyear, aes(x = programFy, y = Floodpropertiesperyear)) +
     x = "Year", 
     y = "Number of Properties")
 ```
+
+
 \newpage
 
 Figure 4 shows the total amount paid by FEMA through flood adaptation grants per year between 1985 and 2020.
