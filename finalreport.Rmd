@@ -56,8 +56,7 @@ library(leaflet)
 #install.packages('mapview')
 #install.packages("mdthemes")
 library(mdthemes)
-remove.packages("gt")
-install.packages("gt")
+#install.packages("gt")
 library(gt)
 #remove.packages("gtsummary")
 #install.packages("gtsummary", stringAsFactors = TRUE)
@@ -102,10 +101,6 @@ ts_buyoutpaidinflation <- read.csv("./Data/Processed/Time_Series_Results/tsresul
 ts_insituprops <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituprops.csv")
 ts_insitupaid <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituamountpaid.csv")
 ts_insitupaidinflation <- read.csv("./Data/Processed/Time_Series_Results/tsresults_insituamountpaidinflation.csv")
-
-
-uninstall(pkg = "rstudio/gt", unload = TRUE, quiet = FALSE, lib = .libPaths()[[1]])
-remove.packages("rstudio/gt", ref="eff3be7384365a44459691e49b9b740420cd0851")
 
 ```
 
@@ -281,8 +276,7 @@ gt.summstats <- Allsummarystatistics %>%
     )%>%
   
   tab_header(
-    title=md("**Administration of Hazard Mitigation Grants**"),
-    label = "tab:tab2"
+    title=md("**Administration of Hazard Mitigation Grants**")
   ) %>% 
   
   tab_options(
@@ -443,6 +437,8 @@ ggplot(inflation_data, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) +
        x = "Year", 
        y= "2020 US Dollars")
 ```
+
+
 \newpage
 A summary of each of these time series results can be found in table 3. 
 
@@ -468,8 +464,7 @@ gt.alladaptresults <- alladapt.results  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("***Time Series Analysis Results: All Adaptation Types***"),
-    label = "tab:tab3"
+    title=md("***Time Series Analysis Results: All Adaptation Types***")
   ) %>% 
   
   cols_hide(columns = c(
@@ -520,6 +515,8 @@ ggplot(databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) +
   y = "Number of Properties", 
   x = "Year")
 ```
+
+
 \newpage
 
 The statistically significant monotonic trend in the total amount paid for buyouts (p = 0.003) can be found in figure 9. 
@@ -573,8 +570,7 @@ gt.alladaptresults <- buyouts.tsresults  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("***Time Series Analysis Results: Ex-Situ Adaptation***"),
-    label = "tab:tab4"
+    title=md("***Time Series Analysis Results: Ex-Situ Adaptation***")
   ) %>% 
   
   cols_hide(columns = c(
@@ -681,8 +677,7 @@ gt.insituresults <- insitu.tsresults  %>%
   fmt_number(columns = c(Result), decimals = 3) %>%
 
   tab_header(
-    title=md("***Time Series Analysis Results: In-Situ Adaptation***"),
-    label = "tab:tab5"
+    title=md("***Time Series Analysis Results: In-Situ Adaptation***")
   ) %>% 
   
   cols_hide(columns = c(
@@ -776,6 +771,7 @@ ggplot(data=flood_counties_join) +
 ```
 
 In comparing these two maps it is very clear that the ex-situ adaptation funding is concentrated in the inland county whereas the in-situ adaptation funding is concentrated on the coast. This is an important finding, suggesting that buyouts occur more often inland likely from riverine flooding whereas in-situ adaptation may be more common for coastal flooding. 
+
 
 
 \newpage
