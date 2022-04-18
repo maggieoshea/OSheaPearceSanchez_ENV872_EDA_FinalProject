@@ -1,0 +1,189 @@
+---
+title: "SpatialAnalysis"
+author: "Maggie O'Shea"
+date: "4/12/2022"
+output: html_document
+---
+#Maggie note to self (where left off)
+* Merged files but data won't transfer from flood properties to spatial data - waiting to hear from John --> should be easy to map from there 
+
+```{r setup, include=FALSE}
+library(tidyverse, quietly = TRUE)
+library(lubridate)
+
+#install.packages('sf')
+library(sf)
+#install.packages('leaflet')
+library(leaflet)
+#install.packages('mapview')
+library(mapview)
+library(priceR)
+
+raw_flooddata <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv", stringsAsFactors = TRUE)
+
+inflationadjusted <- read.csv('./Data/inflationadjusted.csv')
+#Removed shapefile from code because it was too big to push up 
+#USA_counties <- st_read('./Data/Raw_Data/USA_Counties/USA_Counties.shp')
+NC_countyboundaries <- st_read('./Data/Raw_Data/North_Carolina_State_and_County_Boundary_Polygons')
+
+```
+
+
+## Wrangle by County
+
+# Actual Amount Paid 
+```{r}
+#All flood properties
+NC_clean_hazardprops <- raw_flooddata %>%
+  filter(!is.na(actualAmountPaid))%>%
+  filter(actualAmountPaid > 0)%>%
+  filter(state == "North Carolina")
+
+NC.floodproperties_amountpaid <- NC_clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(All_propertiesamountpaid = sum(actualAmountPaid))
+
+#Ex situ
+NC.buyoutfloodproperties_amountpaid <- NC_clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(county, state)%>%
+  summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
+
+#In situ
+NC.insitufloodproperties_amountpaid <- NC_clean_hazardprops %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(insituproperties_amountpaid = sum(actualAmountPaid))
+
+in.ex.county <- left_join(NC.buyoutfloodproperties_amountpaid, NC.insitufloodproperties_amountpaid, by = c("county", "state"))
+
+amountpaid.NCall <- left_join(in.ex.county, NC.floodproperties_amountpaid, by = c("county", "state"))
+
+```
+
+
+# Number of Properties
+
+```{r}
+NC.floodproperties_number <- NC_clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|200.6|200.7|200.8|200.9|201.1|201.2|201.3|201.4|201.5|201.6|201.7|201.8|201.9|201.10|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(All_properties = sum(numberOfProperties))
+
+#Ex situ
+NC.buyoutfloodproperties <- NC_clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(county, state)%>%
+  summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
+
+#In situ
+NC.insitufloodproperties <- NC_clean_hazardprops  %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(county, state)%>%
+  summarise(insitupropertiesperyear = sum(numberOfProperties))
+
+insitu.props <- left_join(NC.insitufloodproperties, NC.buyoutfloodproperties, by = c("county", "state"))
+numberofprops.NC <- left_join(insitu.props, NC.floodproperties_number, by = c("county", "state"))
+```
+
+```{r make and wrangle combined dataset}
+alldata.bycountyNC <- left_join(numberofprops.NC, amountpaid.NCall, by = c("county", "state"))%>%
+  mutate("County" = county)
+
+#Turn NAs to zeros because [assumption we are making is..] those counties with no value in column indicates that they did not receive a grant
+
+alldata.bycountyNC[is.na(alldata.bycountyNC)] <- 0  
+
+write.csv(alldata.bycountyNC, "./Data/Processed/databycounty_forspatial.csv")
+
+flood_counties_join <- left_join(NC_countyboundaries, alldata.bycountyNC, by = "County")
+flood_counties_merge <-  merge(x = NC_countyboundaries,
+                           y = alldata.bycountyNC, 
+                           by.x = 'County', 
+                           by.y = 'county')
+
+#Turn NAs to zeros again for added counties from map 
+flood_counties_merge [is.na(flood_counties_merge)] <- 0  
+flood_counties_join [is.na(flood_counties_join)] <- 0 
+
+class(flood_counties_join)
+```
+
+
+```{r}
+mapview(flood_counties_join, zcol='All_properties')
+
+library(RColorBrewer)
+library(viridis)
+
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=All_properties)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Number of Properties that Received Flooding Adaptation Funding: 1985-2020',
+    fill ='Number of Properties'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=All_propertiesamountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for Flooding Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+```
+# Note from Maggie: 
+Comparing these maps is weird because the first one shows dare county really dark with lots of properties receiving grants, while the second one shows that at 0 dollars paid for adaptation. I trust the number of properties a bit more - maybe we just do spatial analysis on the number of properties as I saw in the data that those numbers were more reliable whereas in some cases they would have an entry with a few properties renovated/bought out and then no number for amount paid which I assume just means it wasn't reported in all cases? We also could include both of these and use it as a way to talk about limitations in the dataset. 
+
+```{r}
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=insitupropertiesperyear)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Number of Properties that Received In Situ Adaptation Funding: 1985-2020',
+    fill ='Number of Properties'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=Buyouts_propertiesperyear)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Number of Properties that Received Ex Situ Adaptation Funding: 1985-2020',
+    fill ='Number of Properties'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+```
+# Notes from Maggie: 
+This is interesting because it shows that buyouts are concentrated near what is likely riverine flooding, while coastal flooding gets more in-situ adaptation money. You can also see in the coastal region that inland counties have more buyouts than coastal which could indicate that wealthier coastal homeowners are able to do more to keep their home where it is, whereas inland communities are being bought out. 
+
+```{r}
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=Buyouts_propertiesamountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for Ex-Situ Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+ggplot(data=flood_counties_join) +
+  geom_sf(aes(fill=insituproperties_amountpaid)) + 
+  scale_fill_gradientn(colours = colorspace::heat_hcl(7), trans = 'reverse')+
+  labs(
+    title='Total Amount Paid for In-Situ Adaptation: 1985-2020',
+    fill ='Amount Paid (USD)'
+  )+
+  theme(plot.title = element_text(size=12, hjust=0.5), 
+        legend.text = element_text(size = 10))
+
+```
+

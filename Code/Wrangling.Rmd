@@ -1,0 +1,346 @@
+---
+title: "Wrangling data"
+author: "Maggie O'Shea"
+date: "4/2/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+###Key to Dataset Names: 
+Note: There are other datasets that I made in wrangling, but it was simply to get to the final outcome datasets, especially when I was merging sets. Those in-between ones aren't listed here
+
+**hazard_properties** = Raw Hazard Property Data
+**clean_hazardprops** = Hazard Property Data with the negative numbers removed 
+**SOVI_USA** = Social Vulnerability Dataset from ESRI
+**SOVI_wrangle** = SVI data with added percent owner occupied column
+
+#Time Series Relevant Data: 
+--------------------------
+**floodproperties_amountpaid** = Total USD Paid *per year* for all properties funded to adapt to flooding
+
+**buyoutfloodproperties_amountpaid** = Total USD paid *per year* for properties bought out due to flooding =
+**insitufloodproperties_amountpaid** = Total USD paid *per year* for properties to adapt in place (in situ), aka for owners to stay where they are and re-construct their home/property to be more resilient to floods
+
+**floodproperties** = Number of properties that received grant money for flooding hazards *per year*
+
+**buyoutfloodproperties** =  Number of properties that were bought out due to flooding *per year*
+**insitufloodproperties** = Number of properties that received grant money to adapt the property in situ *per year* 
+
+**propertiesvalue_allflood** = Joined number of properties and amount paid *per year* 
+
+**zero_NA_alldata** = Joined all *per year* data including all, in-situ, and ex-situ for number of properties and total USD paid with NAs turned to zeros
+
+
+#Spatial Analysis Relevant Data: 
+-------------------------------
+**paidperstate_flood** = Total USD paid *per state* for any flood adaptation  
+
+**exsitu_paidperstate** = Total USD paid *per state* for properties bought out due to flooding
+**insitu_paidperstate** = Total USD paid *per state* for properties to stay and adapt in place (in situ)
+
+**floodproperties_bystate** = Total USD paid *per state* for all flooding-affected properties
+**floodproperties_bystateperyear** = Total USD paid *per state, per year* for all flooding-affected properties
+
+**exsitu_propsperstate** = Total USD paid *per state* for buyouts due to flooding 
+**insitu_propsperstate** = Total USD paid *per state* for properties to adapt in place 
+
+**propertiesbystate_allflood** = Joined all flood properties (in and ex situ) *by state* including total paid and number of properties 
+
+**all_data_bystate** = Joined all datasets *by state* including all/insitu/exsitu for total amount paid and number of properties 
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyverse)
+
+library(tidyverse)
+library(lubridate)
+library(trend)
+library(zoo)
+library(Kendall)
+library(tseries)
+
+hazard_properties <- read.csv("./Data/Raw_Data/HazardMitigationAssistanceMitigatedProperties.csv")
+```
+
+#Note: 
+I wrangled the data in two ways. First, like we talked about, I summarized amount paid over time, then looked at the amount paid for in-situ vs. ex-situ adaptation. However, all the observations before 1999 are NAs for amount paid and there are a few negative numbers (which I removed). Because of all this, I also summarized by number of properties in case we wanted to also look at that because we had data further back in time. 
+
+
+
+#Actual Amount Paid by Year
+```{r amount paid per year}
+#All flood properties
+colnames(hazardprops)
+#Some negative values --> not sure what these were, so removed
+clean_hazardprops <- hazard_properties %>% 
+  filter(actualAmountPaid > 0)
+```
+
+#Actual Amount Paid 
+```{r}
+#All flood properties
+colnames(hazard_properties)
+clean_hazardprops <- hazard_properties %>%
+  filter(!is.na(actualAmountPaid))%>%
+  filter(actualAmountPaid > 0)
+
+floodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(programFy)%>%
+  summarise(Floodproperties_amountpaid = sum(actualAmountPaid))
+
+#Ex situ
+buyoutfloodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(programFy)%>%
+  summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))
+
+#In situ
+insitufloodproperties_amountpaid <- clean_hazardprops %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(programFy)%>%
+  summarise(insituproperties_amountpaid = sum(actualAmountPaid))
+```
+
+```{r inflation adjustments}
+install.packages("priceR")
+library(priceR)
+price <- floodproperties_amountpaid
+
+amountpaid_inflation <- priceR::adjust_for_inflation(floodproperties_amountpaid$Floodproperties_amountpaid, floodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_floodproperties_amountpaid <- floodproperties_amountpaid %>%
+  mutate("InflationAdjusted_AllAmountpaid" = amountpaid_inflation)
+
+#Ex situ
+
+buyouts_inflation <- priceR::adjust_for_inflation(buyoutfloodproperties_amountpaid$Buyouts_propertiesamountpaid, buyoutfloodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_buyoutfloodproperties_amountpaid <- buyoutfloodproperties_amountpaid%>%
+  mutate("InflationAdjusted_BUYOUTAmountpaid" = buyouts_inflation)
+
+#In situ
+insitu_inflation <- priceR::adjust_for_inflation(insitufloodproperties_amountpaid$insituproperties_amountpaid, insitufloodproperties_amountpaid$programFy, "US", to_date = 2020)
+
+inflation_insituprops_amountpaid <- insitufloodproperties_amountpaid%>%
+  mutate("InflationAdjusted_INSITUAmountpaid" = insitu_inflation)
+
+```
+
+
+
+
+```{r visualize amount paid}
+
+ggplot(floodproperties_amountpaid, aes(y= Floodproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm)+
+  labs(title = "All Flood Properties Amount Paid over Time",
+       x= "Fiscal Year")
+
+ggplot(inflation_floodproperties_amountpaid, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm)+
+  labs(title = "All Flood Properties Amount Paid over Time",
+       x= "Fiscal Year")
+
+##Ex-Situ Trends, and Inflation Adjusted Trends
+ggplot(buyoutfloodproperties_amountpaid, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Ex-Situ Flood Properties Amount Paid over Time")
+
+ggplot(inflation_buyoutfloodproperties_amountpaid, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm)+
+  labs(title = "Inflation Adjusted: Ex Situ Flood Properties Amount Paid over Time",
+       x= "Fiscal Year")
+
+##In-Situ Trends and Inflation Adjusted Trends
+ggplot(insitufloodproperties_amountpaid, aes(y= insituproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "In-Situ Flood Properties Amount Paid over Time")
+
+ggplot(inflation_insituprops_amountpaid, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "In-Situ Flood Properties Amount Paid over Time")
+ 
+```
+
+#Amount paid per state
+```{r Flood paid by state}
+
+paidperstate_flood <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state)%>%
+  summarise(Floodproperties_amountpaid = sum(actualAmountPaid))%>%
+  rename("STATE_NAME" = state)
+
+#Ex situ
+exsitu_paidperstate <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(state)%>%
+  summarise(Buyouts_propertiesamountpaid = sum(actualAmountPaid))%>%
+  rename("STATE_NAME" = state)
+
+#In Situ
+insitu_paidperstate <- clean_hazardprops %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state)%>%
+  summarise(insituproperties_amountpaid = sum(actualAmountPaid))%>%
+  rename("STATE_NAME" = state)
+```
+
+Based on the graph and data for in-situ adaptation, 2008 looks like a bit of an outlier with a larger amount paid than the rest of the years, so I wanted to see what it looked like without 2008: 
+```{r remove 2008 outlier}
+
+no2008_insitufloodproperties <- insitufloodproperties_amountpaid%>%
+  filter(programFy != 2008) 
+
+ggplot(no2008_insitufloodproperties, aes(y= insituproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "In-Situ Flood Properties Amount Paid over Time")
+
+```
+
+#Number of Properties by Year
+```{r Number of Properties by year}
+#All flood properties
+floodproperties <- hazard_properties %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(programFy)%>%
+  summarise(Floodpropertiesperyear = sum(numberOfProperties))
+
+
+#Ex situ
+buyoutfloodproperties <- hazard_properties %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(programFy)%>%
+  summarise(Buyouts_propertiesperyear = sum(numberOfProperties))
+
+
+
+#In situ
+insitufloodproperties <- hazard_properties  %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(programFy)%>%
+  summarise(insitupropertiesperyear = sum(numberOfProperties))
+
+finalprojecttheme <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=14, hjust=0.5), 
+            plot.subtitle = element_text(size=10, hjust=0.5))
+
+ggplot(floodproperties, aes(y= Floodpropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Hazard Mitigation Grant Recipient Properties 1985 - 2020", 
+       x = "Fiscal Year", 
+       y= "Number of Properties per Year") +
+  finalprojecttheme
+
+ggplot(buyoutfloodproperties, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
+
+ggplot(insitufloodproperties, aes(y= insitupropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
+  subtitle = "(1985 - 2020)")
+
+```
+
+```{r number of properties by state}
+#All flood properties
+floodproperties_bystateperyear <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state, programFy)%>%
+  summarise(Floodpropertiesperyear = sum(numberOfProperties))%>%
+  rename("STATE_NAME" = state)
+
+floodproperties_bystate <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4|202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state)%>%
+  summarise(Floodpropertiesperyear = sum(numberOfProperties))%>%
+  rename("STATE_NAME" = state)
+
+
+#Ex situ
+exsitu_propsperstate <- clean_hazardprops %>%
+  filter(grepl('200.1|200.2|200.3|200.4|200.5|201.1|201.2|201.3|201.4', type))%>%
+  group_by(state)%>%
+  summarise(Buyouts_propertiesperyear = sum(numberOfProperties))%>%
+  rename("STATE_NAME" = state)
+
+#In situ
+insitu_propsperstate <- clean_hazardprops %>%
+  filter(grepl('202.1|202.2|202.3|202.4|203.1|203.2|203.3|203.4|204.1|204.1|204.2|204.3|204.4|204.5|204.6|207.2', type))%>%
+  group_by(state)%>%
+  summarise(insitupropertiesperyear = sum(numberOfProperties))%>%
+  rename("STATE_NAME" = state)
+```
+
+#I combined the data in a variety of different ways depending on what would be the most useful for the analysis. There is one for each of the three categories (all flood properties, just ex-situ, just in-situ) with both the properties and total amount paid. There is also a dataframe with all of this information in one including the number of properties and amount paid for all flood properties, for in-situ, and for ex-situ. 
+```{r join by year datasets}
+propertiesvalue_allflood <- left_join(floodproperties, floodproperties_amountpaid, by = "programFy")
+
+insitu_paidprops<- left_join(insitufloodproperties, insitufloodproperties_amountpaid, by = "programFy")
+
+exsitu_paidprops <- left_join (buyoutfloodproperties, buyoutfloodproperties_amountpaid, by = "programFy") 
+
+joinexsitu_insitu <- left_join (exsitu_paidprops, insitu_paidprops, by = "programFy")
+
+all_data_propvalue <- left_join(propertiesvalue_allflood, joinexsitu_insitu, by = "programFy")
+```
+
+```{r join by state datasets}
+propertiesbystate_allflood <- left_join(floodproperties_bystate, paidperstate_flood, by = "STATE_NAME")
+
+insitu_state<- left_join(insitu_paidperstate, insitu_propsperstate, by = "STATE_NAME")
+
+exsitu_state <- left_join (exsitu_paidperstate, exsitu_propsperstate, by = "STATE_NAME") 
+
+state_in.ex.situ <- left_join (exsitu_state, insitu_state, by = "STATE_NAME")
+
+all_data_bystate <- left_join(state_in.ex.situ , propertiesbystate_allflood, by = "STATE_NAME")
+```
+
+
+
+#Make NAs Zero, and Date column which is January 1st for each year.  *Note this NAs as an assumption we made in the discussion*
+```{r}
+zero_NA_alldata <- all_data_propvalue%>%
+  mutate("Date" = paste("1/1/", programFy))
+
+zero_NA_alldata$Date <- gsub(" ", "", zero_NA_alldata$Date)
+
+zero_NA_alldata$Date <- as.Date(zero_NA_alldata$Date, "%m/%d/%Y")
+
+
+zero_NA_alldata[is.na(zero_NA_alldata)] <- 0
+
+```
+
+#Bind Inflation Adjusted
+```{r}
+inflation_exsituinsitu <- left_join(inflation_buyoutfloodproperties_amountpaid, inflation_insituprops_amountpaid, by = "programFy")
+
+allinflationadjusted <- left_join(inflation_floodproperties_amountpaid, inflation_exsituinsitu, by = "programFy")
+```
+
+inflation_floodproperties_amountpaid inflation_buyoutfloodproperties_amountpaid inflation_insituprops_amountpaid
+```{r}
+write.csv(all_data_bystate,"./Data/Processed/alldatabystate.csv")
+write.csv(zero_NA_alldata, "./Data/Processed/alldatabyyear.csv")
+write.csv(floodproperties_bystateperyear, "./Data/Processed/bystateandyearflood.csv")
+write.csv(allinflationadjusted, "./Data/Processed/inflationadjusted.csv")
+```
+
+

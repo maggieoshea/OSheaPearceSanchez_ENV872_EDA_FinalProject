@@ -1,0 +1,511 @@
+---
+title: "Data Analysis"
+author: "Diane Sanchez, Maggie O'Shea, & Garrett Pearce"
+date: "4/6/2022" 
+output:
+  html_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+#Note from Maggie: 
+I added a few things to the document: I ran the time series with all the TS objects you made for number of properties, amount paid and exsitu/insitu. Because that just tests is there a statistically significant trend, I then plotted each of them so you can see the direction of the trend. I also added a few notes interpreting the findings of the time series analysis, and the plot together. I tried to keep it relatively neat but hopefully it's not too overwhelming! 
+
+# Overall Findings: 
+The only statistically significant trend (after adjusting for inflation) is the number of properties receiving funding for in-situ adaptation. That still is really interesting because it shows that our trends in amount paid are just a reflection of inflation, but we can say that more properites are receiving in-situ funding over time. Maybe that is because we are early in the sea level rise impacts in that maybe if we did the same study in 10 years there would be more buyouts but right now it isn't too bad so people can still stay where they are? However, to actually know if that's true we'd need a deeper spatial analysis to see if the areas with increased funding is in fact coastal. 
+
+```{r, include = FALSE, message=FALSE, warning=FALSE}
+library(jtools)
+library(gt)
+library(gtsummary)
+library(knitr)
+library(moments)
+library(tidyverse)
+library(tidyverse)
+library(lubridate)
+#install.packages("trend")
+library(trend)
+#install.packages("zoo")
+library(zoo)
+#install.packages("Kendall")
+library(Kendall)
+#install.packages("tseries")
+library(tseries)
+#install.packages("kableExtra")
+library(kableExtra)
+library(gt)
+```
+
+```{r setup, message = FALSE, include = FALSE, message=FALSE}
+Databyyear <- read.csv("./Data/alldatabyyear.csv")
+
+inflationadjusted <- read.csv("./Data/inflationadjusted.csv")
+
+#summary(State_data)
+#summary(State_year)
+
+finalprojecttheme <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=14, hjust=0.5), 
+            plot.subtitle = element_text(size=10, hjust=0.5))
+finalprojecttheme_longtitle <- theme_light(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+            legend.position = "right",  
+            plot.title = element_text(size=11), 
+            plot.subtitle = element_text(size=10))
+
+```
+
+
+#time series 
+
+```{r Number of properties analysis}
+##Analysis of Trends in Number of Properties Per year
+Flood_properties_ts <- ts(Databyyear$Floodpropertiesperyear, 
+                          start=c(1989,1, frequency = 12))
+kendall_properties <- Kendall::MannKendall(Flood_properties_ts)
+summary(kendall_properties)
+
+allprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.0, 1))
+
+df.allprops <- as.data.frame(do.call(cbind, allprops.list))
+write.csv(df.allprops, "./Data/Processed/Time_Series_Results/tsresults_allprops.csv")
+
+```
+
+```{r message=FALSE, warning=FALSE}
+ggplot(Databyyear, aes(y= Floodpropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Floodpropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Hazard Mitigation Grant Recipient Properties 1985 - 2020", 
+       x = "Fiscal Year", 
+       y= "Number of Properties per Year") +
+  finalprojecttheme
+```
+
+## Quick Analysis - All Properties, Number of Properties: 
+
+Looks like a p-value of 1 which means there is no statistical significance..however a p-value of 1 seems very weird. However, if we believe it then that means there is no statistically significant evidence to support that the data is not stationary, so there is no statistically significant trend. Looking at the plot, this isn't surprising, as the trend line is relatively flat with large error bars.
+
+```{r Amount paid analysis}
+##Analysis of Trends in Amount Paid Per year
+Flood_amounts_paid_ts <- ts(Databyyear$Floodproperties_amountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_amountpaid <- Kendall::MannKendall(Flood_amounts_paid_ts )
+summary(kendall_amountpaid)
+
+allpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.361, 0.005))
+
+df.allpaid <- as.data.frame(do.call(cbind, allpaid.list))
+write.csv(df.allpaid, "./Data/Processed/Time_Series_Results/tsresults_allpaid.csv")
+```
+
+# Time Series Analysis of Trends in Amount Paid Per year
+          | Value
+-------------------
+Tau       |  0.361
+P-value   |  0.005
+
+
+
+```{r message=FALSE, warning=FALSE}
+ggplot(Databyyear, aes(y= Floodproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Floodproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for Flood Adaptation in the United States",
+  subtitle = "Hazard Mitigation Grant Program: 1985 - 2020", 
+       x = "Year", 
+       y= "Total Amount Paid for Flood Adaptation (USD)") +
+  finalprojecttheme
+
+```
+
+## Quick Analysis - All Properties, Total Amount Paid: 
+
+P-value of 0.00465! "The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05." This means that there is a trend in the data for amount paid - woohoo! Looking at the graph this is unsurprising as there is a clear increase in the amount paid per year. This shows that the increase in total amount paid is statistically significant according to our time series analysis. Very interesting! 
+
+```{r Amount paid analysis with inflation}
+##Analysis of Trends in Amount Paid Per year
+inflation_Flood_AP_ts <- ts(inflationadjusted$InflationAdjusted_AllAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_amountpaid_inflation <- Kendall::MannKendall(inflation_Flood_AP_ts)
+summary(kendall_amountpaid_inflation)
+```
+
+```{r make results table}
+titlesvector <- c("Tau", "P-value")
+values_allpaidinflation <- c(0.087, 0.568)
+
+allpaidinflat.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.087, 0.568))
+
+df.allpaidinflation <- as.data.frame(do.call(cbind, allpaidinflat.list))
+write.csv(df.allpaidinflation, "./Data/Processed/Time_Series_Results/tsresults_allpaidinflation.csv")
+
+results_allpaidinflat <- gt(df.allpaidinflation )%>%
+  tab_header(
+    title = md("Time Series Results: Total Amount Paid *Inflation Adjusted*")
+  )
+results_allpaidinflat
+```
+
+
+```{r message=FALSE, warning=FALSE}
+ggplot(inflationadjusted, aes(y= InflationAdjusted_AllAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= InflationAdjusted_AllAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for Flood Adaptation in the United States (*Inflation Adjusted*)",
+  subtitle = "1985 - 2020", 
+       x = "Year", 
+       y= "Inflation Adjusted Total Amount Paid for Flood Adaptation (2020 US Dollars)") +
+  finalprojecttheme_longtitle
+
+```
+
+## Quick Analysis - All Properties, Total Amount Paid ***Inflation Adjusted***
+
+Tau would indicate a slight positive trend, but the p-value is 0.57 so it is not a statistically significant trend. This may indicate that our trends in amount paid are just a reflection of inflation and not a reflection of any real trend. 
+
+
+#buyout time series 
+```{r}
+#number of properties 
+Number_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesperyear, 
+                       start=c(1989,1, frequency= 12))
+kendall_propertiesbuyouts <- Kendall::MannKendall(Number_Flood_buyouts_ts)
+summary(kendall_propertiesbuyouts)
+
+buyoutprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(-0.073, 0.570))
+
+df.buyoutsprops <- as.data.frame(do.call(cbind, buyoutprops.list))
+write.csv(df.buyoutsprops, "./Data/Processed/Time_Series_Results/tsresults_buyoutprops.csv")
+
+results_buyoutprops <- gt(df.buyoutsprops)%>%
+  tab_header(
+    title = md("Time Series Results: Number of Buyouts")
+  )
+results_buyoutprops
+```
+
+
+```{r message=FALSE, warning=FALSE}
+ggplot(Databyyear, aes(y= Buyouts_propertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for Ex-Situ Adaptation to Flooding", 
+  subtitle = "1985 - 2020", 
+  y = "Number of Properties", 
+  x = "Year") +
+  finalprojecttheme_longtitle
+```
+
+## Quick Analysis - Buyouts Properties, Number of Properties
+
+Our plot shows that there appears to be a decrease in Number of bought out properties per year, however the time series analysis shows that this trend is not statistically significant (p > 0.05). 
+
+
+```{r}
+#amount paid 
+Paid_Flood_buyouts_ts <- ts(Databyyear$Buyouts_propertiesamountpaid,
+                            start=c(1989,1, frequency=12))
+
+kendall_paidbuyouts <- Kendall::MannKendall(Paid_Flood_buyouts_ts)
+summary(kendall_paidbuyouts)
+
+buyoutamountpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.374, 0.003))
+
+df.buyoutamountpaid <- as.data.frame(do.call(cbind, buyoutamountpaid.list))
+write.csv(df.buyoutsprops, "./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaid.csv")
+
+```
+
+# Time Series Analysis of Monotonic Trends in Total Amount Paid for Buyouts 
+          | Value
+-------------------
+Tau       |  0.374
+P-value   |  0.003
+
+```{r message=FALSE, warning=FALSE, echo= FALSE}
+ggplot(Databyyear, aes(y= Buyouts_propertiesamountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= Buyouts_propertiesamountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for Ex-Situ Flood Adaptation in the United States",
+  subtitle = "1985 - 2020", 
+  y = "Amount Paid (USD)", 
+  x = "Year") +
+  finalprojecttheme
+```
+
+
+## Quick Analysis - Buyouts, Total Amount Paid: 
+
+This p-value was statistically significant. Suggesting that there is a statistically significant trend in the amount spent on buyouts and according to the plot, this is increasing. Interestingly, though the time series for number of properties is not statistically significant the linear model trend line is decreasing. The combination of this may indicate that more expensive homes are being bought out such that less homes are being bought out, but they are more costly to buy. Further analysis would be necessary to make this conclusion, however, given that the time series on number of properties was not significant. 
+
+```{r buyouts amount paid with inflation}
+inflation_buyoutsAP_ts <- ts(inflationadjusted$InflationAdjusted_BUYOUTAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_Buyouts_inflation <- Kendall::MannKendall(inflation_buyoutsAP_ts)
+summary(kendall_Buyouts_inflation)
+
+buyoutamountpaidinflation.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.101, 0.503))
+
+df.buyoutamountpaidinflation <- as.data.frame(do.call(cbind, buyoutamountpaidinflation.list))
+write.csv(df.buyoutamountpaidinflation , "./Data/Processed/Time_Series_Results/tsresults_buyoutamountpaidinflation.csv")
+```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for Buyouts *Inflation Adjusted*
+          | Value
+-------------------
+Tau       |  0.101
+P-value   |  0.503
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(inflationadjusted, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= InflationAdjusted_BUYOUTAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for Buyouts in the United States (*Inflation Adjusted*)",
+  subtitle = "1985 - 2020", 
+       x = "Year", 
+       y= "Inflation Adjusted Total Amount Paid for Flood Adaptation (2020 US Dollars)") +
+  finalprojecttheme_longtitle
+```
+
+## Quick Analysis - Buyouts, Total Amount Paid ***Inflation Adjusted***
+
+Tau would indicate a positive trend, but the p-value is 0.50 so it is not a statistically significant trend. Again, this helps to show that our initial trend of amount spent pre-inflation is likely just a result of inflation. 
+
+## In Situ Time Series 
+```{r}
+#number of properties 
+Number_Flood_insut_paid_ts <- ts(Databyyear$insitupropertiesperyear, 
+                            start=c(1989,1, frequency=12))
+
+
+kendall_propertiesinsitu <- Kendall::MannKendall(Number_Flood_insut_paid_ts )
+summary(kendall_propertiesinsitu)
+
+insituprops.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.44, 0.0004))
+
+df.insituprops <- as.data.frame(do.call(cbind, insituprops.list))
+write.csv(df.insituprops , "./Data/Processed/Time_Series_Results/tsresults_insituprops.csv")
+```
+
+# Time Series Analysis of Monotonic Trends in Number of Properties Receiving In Situ Funding
+          | Value
+-------------------
+Tau       |  0.44
+P-value   |  0.0004
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(Databyyear, aes(y= insitupropertiesperyear, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insitupropertiesperyear, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Number of Properties that Received Funding for In-Situ Adaptation to Flooding", 
+  subtitle = "1985 - 2020", 
+  x = "Year", 
+  y = "Number of Properties")+
+  finalprojecttheme_longtitle
+
+```
+
+## Quick Analysis - In Situ, Number of Properties: 
+
+This monotonic trend is also statistically significant with a p-value of 0.0004. This combined with the linear model trendline on the plot suggests that there is a statistically significant increase in the number of properties receiving grant money to adapt "in place" over time. 
+
+
+
+```{r}
+#amounts paid
+Paid_Flood_insut_ts <- ts(Databyyear$insituproperties_amountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_paidinsitu <- Kendall::MannKendall(Paid_Flood_insut_ts)
+summary(kendall_paidinsitu )
+
+insituamountpaid.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.167, 0.207))
+
+df.insituamountpaid <- as.data.frame(do.call(cbind, insituamountpaid.list))
+write.csv(df.insituamountpaid , "./Data/Processed/Time_Series_Results/tsresults_insituamountpaid.csv")
+```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation
+          | Value
+-------------------
+Tau       |  0.167
+P-value   |  0.207
+
+```{r insitu plot, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(Databyyear, aes(y= insituproperties_amountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= insituproperties_amountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for In-Situ Flood Adaptation in the United States",
+  subtitle = "1985 - 2020", 
+  y = "Amount Paid (USD)", 
+  x = "Year")+
+  finalprojecttheme
+```
+
+## Quick Analysis - In Situ, Total Amount Paid
+
+There is no statistically significant trend in the data, which is consistent with the findings from the plot given that the trendline shows a very minimal increase. 
+
+```{r insitu amount paid with inflation}
+inflation_InSituAP_ts <- ts(inflationadjusted$InflationAdjusted_INSITUAmountpaid, 
+                            start=c(1989,1, frequency=12))
+kendall_insitu_inflation <- Kendall::MannKendall(inflation_InSituAP_ts)
+summary(kendall_insitu_inflation)
+
+insituamountpaidinflation.list <- list(Measure = c("Tau", "P-value"), 
+             Result = c(0.123, 0.484))
+
+df.insituamountpaidinflation <- as.data.frame(do.call(cbind, insituamountpaidinflation.list))
+write.csv(df.insituamountpaidinflation , "./Data/Processed/Time_Series_Results/tsresults_insituamountpaidinflation.csv")
+```
+
+# Time Series Analysis of Monotonic Trends in Amount Paid for In-Situ Adaptation *Inflation Adjusted*
+          | Value
+-------------------
+Tau       |  0.123
+P-value   |  0.484
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(inflationadjusted, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy)) + 
+  geom_line() +
+  geom_smooth(method = lm, aes(y= InflationAdjusted_INSITUAmountpaid, x = programFy), color = "coral", show.legend = FALSE)+
+  labs(title = "Total Amount Paid for In Situ Adaptation in the United States (*Inflation Adjusted*)",
+  subtitle = "1985 - 2020", 
+       x = "Year", 
+       y= "Inflation Adjusted Total Amount Paid for Flood Adaptation (2020 US Dollars)") +
+  finalprojecttheme_longtitle
+```
+
+## Quick Analysis - In Situ, Total Amount Paid ***Inflation Adjusted**
+
+Tau would indicate a positive trend, but the p-value is 0.48 so it is not a statistically significant trend. This likely indicates again that the trends in amount paid are just consistent with trends in inflation rather than real trends in the value spent on these grants. 
+
+### Generating Summary Statistics and Table
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+summary.floodpropsall <- Databyyear%>%  
+  summarize(
+    length=length(Floodpropertiesperyear),
+    mean=mean(Floodpropertiesperyear),
+    median=median(Floodpropertiesperyear),
+    sd=sd(Floodpropertiesperyear))%>%
+  mutate("Name" = "Total Number of Properties")
+
+summary_allfloods2 <- summary.floodpropsall[, c(5, 1, 2, 3, 4)]
+summary_allfloods2
+
+summary.paidperyear <- Databyyear%>%
+  summarize(
+    length=length(Floodproperties_amountpaid),
+    mean=mean(Floodproperties_amountpaid),
+    median=median(Floodproperties_amountpaid),
+    sd=sd(Floodproperties_amountpaid)) %>%
+  mutate("Name" = "Total Amount Paid ($)")
+
+summary_paidperyear2 <- summary.paidperyear[, c(5, 1, 2, 3, 4)]
+
+summary.insitu.properties <- Databyyear%>%
+  summarize(
+    length=length(insitupropertiesperyear),
+    mean=mean(insitupropertiesperyear),
+    median=median(insitupropertiesperyear),
+    sd=sd(insitupropertiesperyear))%>%
+  mutate("Name" = "In-Situ Number of Properties")
+
+summary_insituprops2 <- summary.insitu.properties[, c(5, 1, 2, 3, 4)]
+
+summary.insitu.amntpaid <- Databyyear%>%  
+  summarize(
+    length=length(insituproperties_amountpaid),
+    mean=mean(insituproperties_amountpaid),
+    median=median(insituproperties_amountpaid),
+    sd=sd(insituproperties_amountpaid))%>%
+  mutate("Name" = "In-Situ Amount Paid ($)")
+
+summary_insitupaid2 <- summary.insitu.amntpaid[, c(5, 1, 2, 3, 4)]
+
+summary.exsitu.properties <- Databyyear%>%
+  summarize(
+    length=length(Buyouts_propertiesperyear),
+    mean=mean(Buyouts_propertiesperyear),
+    median=median(Buyouts_propertiesperyear),
+    sd=sd(Buyouts_propertiesperyear))%>%
+  mutate("Name" = "Ex-Situ Number of Properties")
+
+summary_exsituprops2 <- summary.exsitu.properties[, c(5, 1, 2, 3, 4)]
+
+summary.exsitu.amntpaid <- Databyyear%>%
+  summarize(
+    length=length(Buyouts_propertiesamountpaid),
+    mean=mean(Buyouts_propertiesamountpaid),
+    median=median(Buyouts_propertiesamountpaid),
+    sd=sd(Buyouts_propertiesamountpaid))%>%
+  mutate("Name" = "Ex-Situ Amount Paid ($)")
+
+summary_exsitupaid2 <- summary.exsitu.amntpaid[, c(5, 1, 2, 3, 4)]
+
+
+Allsummarystatistics <- rbind(summary_allfloods2, summary_paidperyear2, summary_insituprops2, summary_insitupaid2, summary_exsituprops2, summary_exsitupaid2)
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library(gt)
+gt.summstats <- Allsummarystatistics %>%
+  rename("Category" = Name, "Observations" = length, "Mean" = mean, "Median" = median, "SD" = sd) %>%   
+  gt %>% 
+  fmt_number(columns = c(Observations), decimals = 0) %>%
+  fmt_number(columns = c(Mean), decimals=2) %>%
+  fmt_number(columns = c(SD), decimals = 0) %>%
+  fmt_number(columns = c(Median), decimals = 2) %>% 
+  
+  cols_align(
+      align = "center",
+      columns = Observations
+    )%>%
+  
+  tab_header(
+    title="Administration of Hazard Mitigation Grants",
+  ) %>% 
+  
+  tab_options(
+    row_group.font.weight = "bold",
+    row_group.border.bottom.width = 1, 
+    table_body.vlines.style = "dashed", 
+    table_body.vlines.width = 0.5, 
+    table_body.vlines.color = "grey"
+  )%>%
+
+  tab_source_note(
+    source_note = "Source: Open FEMA Dataset"
+  )%>%
+  
+    tab_row_group(
+    label = "Ex-Situ Adaptation",
+    rows = c(5:6)
+  )%>%
+  
+    tab_row_group(
+    label = "In-Situ Adaptation",
+    rows = c(3:4)
+  )%>%
+  
+  tab_row_group(
+    label = "All Adaptation",
+    rows = c(1:2)
+  )
+
+  
+gt.summstats
+```
